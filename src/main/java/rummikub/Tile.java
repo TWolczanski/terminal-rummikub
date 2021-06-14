@@ -3,14 +3,21 @@ package rummikub;
 public class Tile {
     String color;
     int number;
-    String id;
     
     public Tile(String color, int number){
         this.color = color;
         this.number = number;
-        this.id = color.charAt(0) + Integer.toString(number);
+    }
+    public boolean sameAs(String s){
+        return this.toString().equals(s);
+    }
+    public boolean sameAs(Tile t){
+        return this.color.equals(t.color) && this.number == t.number;
+    }
+    public boolean sameColorAs(Tile t){
+        return this.color.equals(t.color);
     }
     public String toString(){
-        return id;
+        return color.charAt(0) + Integer.toString(number);
     }
 }

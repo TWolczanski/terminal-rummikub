@@ -1,6 +1,6 @@
 package rummikub;
 
-public class Game {
+public class Test {
     public static void main(String[] args){
         Tile redTile = new Tile("red", 12);
         Tile redTile2 = new Tile("red", 12);
