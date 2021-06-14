@@ -17,5 +17,9 @@ public class GameTest {
         assertTrue(redTile.sameAs("r12"));
         assertTrue(!redTile.sameAs("r7"));
         assertTrue(!redTile.sameAs("b12"));
+        Pile pile = new Pile();
+        System.out.println(pile.draw());
+        System.out.println(pile.draw());
+        System.out.println(pile.draw());
     }
 }
