@@ -9,6 +9,27 @@ public class Player {
     public Player(String name){
         this.name = name;
     }
+    private boolean isValid(String id){
+        if(id.length() != 2 && id.length() != 3){
+            return false;
+        }
+        char color = id.charAt(0);
+        if(color == 'r' || color == 'g' || color == 'y' || color == 'b'){
+            char fst = id.charAt(1);
+            if (id.length() == 2) {
+                if (fst > 48 && fst < 58) {
+                    return true;
+                }
+            }
+            else {
+                char snd = id.charAt(2);
+                if(fst == 49 && snd > 47 && snd < 52){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     public void myTurn(Table table, Pile pile){
         Scanner scanner = new Scanner(System.in);
         boolean end = false;
@@ -47,31 +68,15 @@ public class Player {
                     else {
                         boolean valid = true;
                         for (int i = 1; i < s.length; i++) {
-                            if(s[i].length() != 2 && s[i].length() != 3){
-                                valid = false;
+                            if(isValid(s[i])){
+                                args[i - 1] = s[i];
+                            }
+                            else {
                                 System.out.println(s[i] + " is not a valid tile id.");
+                                System.out.println();
+                                valid = false;
                                 break;
                             }
-                            char color = s[i].charAt(0);
-                            if(color == 'r' || color == 'g' || color == 'y' || color == 'b'){
-                                char fst = s[i].charAt(1);
-                                if (s[i].length() == 2) {
-                                    if (fst > 48 && fst < 58) {
-                                        args[i - 1] = s[i];
-                                        continue;
-                                    }
-                                }
-                                else {
-                                    char snd = s[i].charAt(2);
-                                    if(fst == 49 && snd > 47 && snd < 52){
-                                        args[i - 1] = s[i];
-                                        continue;
-                                    }
-                                }
-                            }
-                            valid = false;
-                            System.out.println(s[i] + " is not a valid tile id.");
-                            break;
                         }
                         if(valid){
                             try {
@@ -82,6 +87,7 @@ public class Player {
                             }
                             catch(InvalidTileIdException e){
                                 System.out.println(e.getMessage());
+                                System.out.println();
                             }
                         }
                     }
@@ -89,30 +95,15 @@ public class Player {
                 case "ungroup":
                     boolean valid = true;
                     for (int i = 1; i < s.length; i++) {
-                        if (s[i].length() != 2 && s[i].length() != 3) {
-                            valid = false;
+                        if(isValid(s[i])){
+                            args[i - 1] = s[i];
+                        }
+                        else {
                             System.out.println(s[i] + " is not a valid tile id.");
+                            System.out.println();
+                            valid = false;
                             break;
                         }
-                        char color = s[i].charAt(0);
-                        if (color == 'r' || color == 'g' || color == 'y' || color == 'b') {
-                            char fst = s[i].charAt(1);
-                            if (s[i].length() == 2) {
-                                if (fst > 48 && fst < 58) {
-                                    args[i - 1] = s[i];
-                                    continue;
-                                }
-                            } else {
-                                char snd = s[i].charAt(2);
-                                if (fst == 49 && snd > 47 && snd < 52) {
-                                    args[i - 1] = s[i];
-                                    continue;
-                                }
-                            }
-                        }
-                        valid = false;
-                        System.out.println(s[i] + " is not a valid tile id.");
-                        break;
                     }
                     if (valid) {
                         try {
@@ -122,6 +113,7 @@ public class Player {
                             System.out.println();
                         } catch (InvalidTileIdException e) {
                             System.out.println(e.getMessage());
+                            System.out.println();
                         }
                     }
                     break;
