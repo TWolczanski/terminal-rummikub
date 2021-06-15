@@ -12,6 +12,14 @@ public class Rack {
     public void removeTile(Tile t){
         tiles.remove(t);
     }
+    public Tile getTile(String id) throws InvalidTileException {
+        for(Tile t : tiles){
+            if(t.hasId(id)){
+                return t;
+            }
+        }
+        throw new InvalidTileException("There is no such tile as " + id + " on your rack.");
+    }
     private boolean isGrouped(Tile t){
         for(ArrayList<Tile> group : groups){
             for(Tile tile : group){
@@ -22,45 +30,36 @@ public class Rack {
         }
         return false;
     }
-    public void groupTiles(String[] ids) throws InvalidTileIdException {
-        ArrayList<Tile> group = new ArrayList<Tile>();
-        for(String id : ids){
-            boolean found = false;
-            for(Tile t : tiles){
-                if(t.hasId(id) && !isGrouped(t)){
-                    found = true;
-                    group.add(t);
-                }
-            }
-            if(!found){
-                throw new InvalidTileIdException("Tile " + id + " is either already grouped or not present on your rack.");
+    public void groupTiles(ArrayList<Tile> tiles) throws InvalidTileException {
+        for(Tile t : tiles){
+            if(isGrouped(t)){
+                throw new InvalidTileException("One of the tiles is already grouped!");
             }
         }
-        groups.add(0, group);
+        groups.add(0, tiles);
     }
-    public void ungroupTiles(String[] ids) throws InvalidTileIdException {
-        ArrayList<Tile> toBeRemoved = new ArrayList<Tile>();
+    public void ungroupTiles(ArrayList<Tile> tiles) throws InvalidTileException {
         boolean found = false;
         for(ArrayList<Tile> group : groups){
-            if(ids.length == group.size()){
+            if(tiles.size() == group.size()){
                 boolean check = true;
-                for(int i = 0; i < ids.length; i++) {
-                    if(!(group.get(i).hasId(ids[i]))){
+                for(int i = 0; i < tiles.size(); i++) {
+                    if(!tiles.get(i).sameAs(group.get(i))){
                         check = false;
+                        break;
                     }
                 }
                 if(check){
-                    toBeRemoved = group;
                     found = true;
                     break;
                 }
             }
         }
         if(found){
-            groups.remove(toBeRemoved);
+            groups.remove(tiles);
         }
         else {
-            throw new InvalidTileIdException("There is no such group on your rack.");
+            throw new InvalidTileException("There is no such group on your rack!");
         }
     }
     public String toString(){

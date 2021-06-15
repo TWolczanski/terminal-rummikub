@@ -1,5 +1,6 @@
 package rummikub;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Player {
@@ -39,7 +40,7 @@ public class Player {
             System.out.println();
             String[] s = input.split("\\s+");
             String cmd = s[0];
-            String[] args = new String[s.length - 1];
+            // String[] args = new String[s.length - 1];
             switch(cmd){
                 case "end":
                     end = true;
@@ -47,6 +48,7 @@ public class Player {
                 case "draw":
                     if(pile.isEmpty()){
                         System.out.println("There are no more tiles on the pile!");
+                        System.out.println();
                     }
                     else if (s.length == 1) {
                         Tile t = pile.draw();
@@ -62,59 +64,56 @@ public class Player {
                     }
                     break;
                 case "group":
-                    if(args.length < 2){
+                    if(s.length < 3){
                         System.out.println("Wrong number of tiles to be grouped.");
                     }
                     else {
-                        boolean valid = true;
-                        for (int i = 1; i < s.length; i++) {
-                            if(isValid(s[i])){
-                                args[i - 1] = s[i];
+                        try {
+                            ArrayList<Tile> tiles = new ArrayList<Tile>();
+                            for (int i = 1; i < s.length; i++) {
+                                if (isValid(s[i])) {
+                                    boolean occured = false;
+                                    Tile t = rack.getTile(s[i]);
+                                    for(Tile tile : tiles){
+                                        if(tile == t){
+                                            occured = true;
+                                        }
+                                    }
+                                    if(occured){
+                                        throw new InvalidTileException("You can't group a tile with itself!");
+                                    }
+                                    tiles.add(t);
+                                } else {
+                                    throw new InvalidTileException(s[i] + " is not a valid tile id.");
+                                }
                             }
-                            else {
-                                System.out.println(s[i] + " is not a valid tile id.");
-                                System.out.println();
-                                valid = false;
-                                break;
-                            }
-                        }
-                        if(valid){
-                            try {
-                                rack.groupTiles(args);
-                                System.out.println("Your rack:");
-                                System.out.println(rack);
-                                System.out.println();
-                            }
-                            catch(InvalidTileIdException e){
-                                System.out.println(e.getMessage());
-                                System.out.println();
-                            }
+                            rack.groupTiles(tiles);
+                            System.out.println("Your rack:");
+                            System.out.println(rack);
+                            System.out.println();
+                        } catch (InvalidTileException e) {
+                            System.out.println(e.getMessage());
+                            System.out.println();
                         }
                     }
                     break;
                 case "ungroup":
-                    boolean valid = true;
-                    for (int i = 1; i < s.length; i++) {
-                        if(isValid(s[i])){
-                            args[i - 1] = s[i];
+                    try {
+                        ArrayList<Tile> tiles = new ArrayList<Tile>();
+                        for (int i = 1; i < s.length; i++) {
+                            if (isValid(s[i])) {
+                                tiles.add(rack.getTile(s[i]));
+                            } else {
+                                throw new InvalidTileException(s[i] + " is not a valid tile id.");
+                            }
                         }
-                        else {
-                            System.out.println(s[i] + " is not a valid tile id.");
-                            System.out.println();
-                            valid = false;
-                            break;
-                        }
-                    }
-                    if (valid) {
-                        try {
-                            rack.ungroupTiles(args);
-                            System.out.println("Your rack:");
-                            System.out.println(rack);
-                            System.out.println();
-                        } catch (InvalidTileIdException e) {
-                            System.out.println(e.getMessage());
-                            System.out.println();
-                        }
+                        rack.ungroupTiles(tiles);
+                        System.out.println("Your rack:");
+                        System.out.println(rack);
+                        System.out.println();
+                    } catch (InvalidTileException e) {
+                        System.out.println(e.getMessage());
+                        System.out.println();
                     }
                     break;
             }
