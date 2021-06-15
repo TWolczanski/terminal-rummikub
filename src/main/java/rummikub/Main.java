@@ -26,6 +26,7 @@ public class Main {
             }
             System.out.println("Invalid number of opponents. It should be between 1 and 3.");
         }
+        System.out.println();
         Game game = new Game(playerName, numberOfBots);
         game.startGame();
         scanner.close();

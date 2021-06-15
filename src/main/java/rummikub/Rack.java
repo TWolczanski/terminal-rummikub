@@ -60,7 +60,7 @@ public class Rack {
             groups.remove(toBeRemoved);
         }
         else {
-            throw new InvalidTileIdException("There is no such group as " + ids + " on your rack.");
+            throw new InvalidTileIdException("There is no such group on your rack.");
         }
     }
     public String toString(){
