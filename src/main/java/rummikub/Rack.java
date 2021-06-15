@@ -9,6 +9,9 @@ public class Rack {
     public void addTile(Tile t){
         tiles.add(t);
     }
+    public void removeTile(Tile t){
+        tiles.remove(t);
+    }
     private boolean isGrouped(Tile t){
         for(ArrayList<Tile> group : groups){
             for(Tile tile : group){
