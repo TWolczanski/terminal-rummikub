@@ -12,11 +12,30 @@ public class Rack {
     public void removeTile(Tile t){
         tiles.remove(t);
     }
-    public Tile getTile(String id) throws InvalidTileException {
-        for(Tile t : tiles){
-            if(t.hasId(id)){
-                return t;
+    public Tile getTile(String id, int which) throws InvalidTileException {
+        int i = which;
+        for (ArrayList<Tile> group : groups) {
+            for (Tile tile : group) {
+                if (tile.hasId(id)) {
+                    if (i == 1) {
+                        return tile;
+                    } else {
+                        i--;
+                    }
+                }
             }
+        }
+        for (Tile tile : tiles) {
+            if (tile.hasId(id)) {
+                if (i == 1) {
+                    return tile;
+                } else {
+                    i--;
+                }
+            }
+        }
+        if(which == 2){
+            throw new InvalidTileException("You don't have two tiles with id " + id + " on your rack!");
         }
         throw new InvalidTileException("There is no such tile as " + id + " on your rack.");
     }
@@ -44,7 +63,7 @@ public class Rack {
             if(tiles.size() == group.size()){
                 boolean check = true;
                 for(int i = 0; i < tiles.size(); i++) {
-                    if(!tiles.get(i).sameAs(group.get(i))){
+                    if(!(tiles.get(i) == group.get(i))){
                         check = false;
                         break;
                     }

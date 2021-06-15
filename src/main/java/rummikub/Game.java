@@ -47,6 +47,8 @@ public class Game {
         for(int i = 0; i < 97; i++){
             pile.draw();
         }
+        players[0].rack.addTile(new Tile("red", 2));
+        players[0].rack.addTile(new Tile("red", 2));
         while(!pile.isEmpty()){
             players[0].myTurn(table, pile);
         }

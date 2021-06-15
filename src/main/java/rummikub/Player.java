@@ -45,6 +45,10 @@ public class Player {
                 case "end":
                     end = true;
                     break;
+                case "rack":
+                    System.out.println(rack);
+                    System.out.println();
+                    break;
                 case "draw":
                     if(pile.isEmpty()){
                         System.out.println("There are no more tiles on the pile!");
@@ -72,18 +76,16 @@ public class Player {
                             ArrayList<Tile> tiles = new ArrayList<Tile>();
                             for (int i = 1; i < s.length; i++) {
                                 if (isValid(s[i])) {
-                                    boolean occured = false;
-                                    Tile t = rack.getTile(s[i]);
-                                    for(Tile tile : tiles){
-                                        if(tile == t){
-                                            occured = true;
-                                        }
+                                    tiles.add(rack.getTile(s[i], 1));
+                                }
+                                else if(s[i].length() == 3){
+                                    char fst = s[i].charAt(0);
+                                    s[i] = Character.toString(s[i].charAt(1)) + Character.toString(s[i].charAt(2));
+                                    if(fst == 50 && isValid(s[i])){
+                                        tiles.add(rack.getTile(s[i], 2));
                                     }
-                                    if(occured){
-                                        throw new InvalidTileException("You can't group a tile with itself!");
-                                    }
-                                    tiles.add(t);
-                                } else {
+                                }
+                                else {
                                     throw new InvalidTileException(s[i] + " is not a valid tile id.");
                                 }
                             }
@@ -102,8 +104,16 @@ public class Player {
                         ArrayList<Tile> tiles = new ArrayList<Tile>();
                         for (int i = 1; i < s.length; i++) {
                             if (isValid(s[i])) {
-                                tiles.add(rack.getTile(s[i]));
-                            } else {
+                                tiles.add(rack.getTile(s[i], 1));
+                            }
+                            else if(s[i].length() == 3){
+                                char fst = s[i].charAt(0);
+                                s[i] = Character.toString(s[i].charAt(1)) + Character.toString(s[i].charAt(2));
+                                if(fst == 50 && isValid(s[i])){
+                                    tiles.add(rack.getTile(s[i], 2));
+                                }
+                            }
+                            else {
                                 throw new InvalidTileException(s[i] + " is not a valid tile id.");
                             }
                         }
