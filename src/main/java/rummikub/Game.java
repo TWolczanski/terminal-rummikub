@@ -44,13 +44,9 @@ public class Game {
         }
         System.out.println();
         System.out.println();
-        for(int i = 0; i < 97; i++){
-            pile.draw();
+        for(int i = 0; i < 15; i++){
+            players[0].rack.addTile(pile.draw());
         }
-        players[0].rack.addTile(new Tile("red", 2));
-        players[0].rack.addTile(new Tile("red", 2));
-        while(!pile.isEmpty()){
-            players[0].myTurn(table, pile);
-        }
+        players[0].myTurn(this);
     }
 }

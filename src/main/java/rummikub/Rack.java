@@ -11,6 +11,18 @@ public class Rack {
     }
     public void removeTile(Tile t){
         tiles.remove(t);
+        ArrayList<Tile> containingGroup = new ArrayList<Tile>();
+        for(ArrayList<Tile> group : groups){
+            for(Tile tile : group){
+                if(tile == t){
+                    containingGroup = group;
+                }
+            }
+        }
+        containingGroup.remove(t);
+        if(containingGroup.size() == 1){
+            groups.remove(containingGroup);
+        }
     }
     public Tile getTile(String id, int which) throws InvalidTileException {
         int i = which;
@@ -50,6 +62,9 @@ public class Rack {
         return false;
     }
     public void groupTiles(ArrayList<Tile> tiles) throws InvalidTileException {
+        if(tiles.size() < 2){
+            throw new InvalidTileException("You can't group only one tile!");
+        }
         for(Tile t : tiles){
             if(isGrouped(t)){
                 throw new InvalidTileException("One of the tiles is already grouped!");

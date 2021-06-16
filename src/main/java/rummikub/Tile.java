@@ -9,7 +9,7 @@ public class Tile {
     // public static final String BLUE = "\033[0;96m"; cyan
     
     String color;
-    int number;
+    public int number;
     
     public Tile(String color, int number){
         this.color = color;

@@ -31,7 +31,7 @@ public class Player {
         }
         return false;
     }
-    public void myTurn(Table table, Pile pile){
+    public void myTurn(Game game){
         Scanner scanner = new Scanner(System.in);
         boolean end = false;
         while(!end){
@@ -49,13 +49,17 @@ public class Player {
                     System.out.println(rack);
                     System.out.println();
                     break;
+                case "table":
+                    System.out.println(game.table);
+                    System.out.println();
+                    break;
                 case "draw":
-                    if(pile.isEmpty()){
+                    if(game.pile.isEmpty()){
                         System.out.println("There are no more tiles on the pile!");
                         System.out.println();
                     }
                     else if (s.length == 1) {
-                        Tile t = pile.draw();
+                        Tile t = game.pile.draw();
                         rack.addTile(t);
                         System.out.println("You drew:");
                         System.out.println(" __ ");
@@ -68,24 +72,19 @@ public class Player {
                     }
                     break;
                 case "group":
-                    if(s.length < 3){
-                        System.out.println("Wrong number of tiles to be grouped.");
-                    }
-                    else {
+                    if (s.length > 1){
                         try {
                             ArrayList<Tile> tiles = new ArrayList<Tile>();
                             for (int i = 1; i < s.length; i++) {
                                 if (isValid(s[i])) {
                                     tiles.add(rack.getTile(s[i], 1));
-                                }
-                                else if(s[i].length() == 3){
+                                } else if (s[i].length() == 3 || s[i].length() == 4) {
                                     char fst = s[i].charAt(0);
-                                    s[i] = Character.toString(s[i].charAt(1)) + Character.toString(s[i].charAt(2));
-                                    if(fst == 50 && isValid(s[i])){
+                                    s[i] = s[i].substring(1);
+                                    if (fst == 50 && isValid(s[i])) {
                                         tiles.add(rack.getTile(s[i], 2));
                                     }
-                                }
-                                else {
+                                } else {
                                     throw new InvalidTileException(s[i] + " is not a valid tile id.");
                                 }
                             }
@@ -100,30 +99,64 @@ public class Player {
                     }
                     break;
                 case "ungroup":
-                    try {
-                        ArrayList<Tile> tiles = new ArrayList<Tile>();
-                        for (int i = 1; i < s.length; i++) {
-                            if (isValid(s[i])) {
-                                tiles.add(rack.getTile(s[i], 1));
-                            }
-                            else if(s[i].length() == 3){
-                                char fst = s[i].charAt(0);
-                                s[i] = Character.toString(s[i].charAt(1)) + Character.toString(s[i].charAt(2));
-                                if(fst == 50 && isValid(s[i])){
-                                    tiles.add(rack.getTile(s[i], 2));
+                    if (s.length > 1){
+                        try {
+                            ArrayList<Tile> tiles = new ArrayList<Tile>();
+                            for (int i = 1; i < s.length; i++) {
+                                if (isValid(s[i])) {
+                                    tiles.add(rack.getTile(s[i], 1));
+                                } else if (s[i].length() == 3 || s[i].length() == 4) {
+                                    char fst = s[i].charAt(0);
+                                    s[i] = s[i].substring(1);
+                                    if (fst == 50 && isValid(s[i])) {
+                                        tiles.add(rack.getTile(s[i], 2));
+                                    }
+                                } else {
+                                    throw new InvalidTileException(s[i] + " is not a valid tile id.");
                                 }
                             }
-                            else {
-                                throw new InvalidTileException(s[i] + " is not a valid tile id.");
-                            }
+                            rack.ungroupTiles(tiles);
+                            System.out.println("Your rack:");
+                            System.out.println(rack);
+                            System.out.println();
+                        } catch (InvalidTileException e) {
+                            System.out.println(e.getMessage());
+                            System.out.println();
                         }
-                        rack.ungroupTiles(tiles);
-                        System.out.println("Your rack:");
-                        System.out.println(rack);
-                        System.out.println();
-                    } catch (InvalidTileException e) {
-                        System.out.println(e.getMessage());
-                        System.out.println();
+
+                    }
+                    break;
+                case "put":
+                    if (s.length > 1) {
+                        try {
+                            ArrayList<Tile> tiles = new ArrayList<Tile>();
+                            for (int i = 1; i < s.length; i++) {
+                                if (isValid(s[i])) {
+                                    tiles.add(rack.getTile(s[i], 1));
+                                } else if (s[i].length() == 3 || s[i].length() == 4) {
+                                    char fst = s[i].charAt(0);
+                                    s[i] = s[i].substring(1);
+                                    if (fst == 50 && isValid(s[i])) {
+                                        tiles.add(rack.getTile(s[i], 2));
+                                    }
+                                } else {
+                                    throw new InvalidTileException(s[i] + " is not a valid tile id.");
+                                }
+                            }
+                            game.table.putTiles(tiles);
+                            for (Tile t : tiles) {
+                                rack.removeTile(t);
+                            }
+                            System.out.println("Table:");
+                            System.out.println(game.table);
+                            System.out.println();
+                            System.out.println("Your rack:");
+                            System.out.println(rack);
+                            System.out.println();
+                        } catch (InvalidTileException e) {
+                            System.out.println(e.getMessage());
+                            System.out.println();
+                        }
                     }
                     break;
             }
