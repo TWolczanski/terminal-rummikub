@@ -1,11 +1,22 @@
 package rummikub;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args){
-        Scanner scanner = new Scanner(System.in);
+    public static void main(String[] args) throws FileNotFoundException {
+        File file = new File("ascii-art.txt");
+        Scanner scanner = new Scanner(file);
+        System.out.println("\033[0;91m");
+        while(scanner.hasNextLine()){
+            System.out.println(scanner.nextLine());
+        }
+        scanner.close();
+        scanner = new Scanner(System.in);
+        System.out.println("\u001B[0m");
+        System.out.println();
         System.out.println("Welcome to the terminal version of the Rummikub game!");
         System.out.println();
         System.out.print("Enter your name: ");

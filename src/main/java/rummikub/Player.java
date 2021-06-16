@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class Player {
     Rack rack = new Rack();
-    public String name;
+    String name;
     
     public Player(String name){
         this.name = name;
@@ -34,6 +34,10 @@ public class Player {
     public void myTurn(Game game){
         Scanner scanner = new Scanner(System.in);
         boolean end = false;
+        boolean canDraw = true;
+        Rack rackBackup = rack.rackBackup();
+        Table tableBackup = game.table.tableBackup();
+        
         while(!end){
             System.out.print("> ");
             String input = scanner.nextLine();
@@ -41,7 +45,14 @@ public class Player {
             String cmd = s[0];
             switch(cmd){
                 case "end":
-                    end = true;
+                    if(canDraw){
+                        System.out.println();
+                        System.out.println("You have to draw or make a move in order to end your turn!");
+                        System.out.println();
+                    }
+                    else {
+                        end = true;
+                    }
                     break;
                 case "rack":
                     System.out.println();
@@ -57,9 +68,15 @@ public class Player {
                         System.out.println("There are no more tiles on the pile!");
                         System.out.println();
                     }
+                    else if(!canDraw){
+                        System.out.println();
+                        System.out.println("You can't draw - you've made some moves this turn!");
+                        System.out.println();
+                    }
                     else if (s.length == 1) {
                         Tile t = game.pile.draw();
                         rack.addTile(t);
+                        end = true;
                         System.out.println();
                         System.out.println("You drew:");
                         System.out.println(" __ ");
@@ -157,6 +174,7 @@ public class Player {
                             System.out.println("Your rack:");
                             System.out.println(rack);
                             System.out.println();
+                            canDraw = false;
                         } catch (InputException | RackException | TableException e) {
                             System.out.println(e.getMessage());
                             System.out.println();
@@ -197,6 +215,49 @@ public class Player {
                             System.out.println("Your rack:");
                             System.out.println(rack);
                             System.out.println();
+                            canDraw = false;
+                        }
+                        catch(InputException | RackException | TableException e){
+                            System.out.println();
+                            System.out.println(e.getMessage());
+                            System.out.println();
+                        }
+                    }
+                    break;
+                case "take":
+                    if(s.length == 3){
+                        try {
+                            if (isValid(s[2])) {
+                                if(s[1].matches("\\d+")){
+                                    Tile t = game.table.takeTile(Integer.parseInt(s[1]), s[2]);
+                                    rack.addTile(t);
+                                }
+                                else {
+                                    throw new InputException(s[1] + "is not a valid sequence number!");
+                                }
+                            } else if (s[2].length() == 3 || s[2].length() == 4) {
+                                char fst = s[2].charAt(0);
+                                s[2] = s[2].substring(1);
+                                if (fst == 50 && isValid(s[2])) {
+                                    Tile t = rack.getTile(s[2], 2);
+                                    if(s[1].matches("\\d+")){
+                                        game.table.addTile(Integer.parseInt(s[1]), t);
+                                        rack.removeTile(t);
+                                    }
+                                    else {
+                                        throw new InputException(s[1] + "is not a valid sequence number!");
+                                    }
+                                }
+                            } else {
+                                throw new InputException(s[2] + " is not a valid tile id!");
+                            }
+                            System.out.println();
+                            System.out.println("Table:");
+                            System.out.println(game.table);
+                            System.out.println("Your rack:");
+                            System.out.println(rack);
+                            System.out.println();
+                            canDraw = false;
                         }
                         catch(InputException | RackException | TableException e){
                             System.out.println();
@@ -210,5 +271,8 @@ public class Player {
                     break;
             }
         }
+    }
+    public String toString(){
+        return name;
     }
 }

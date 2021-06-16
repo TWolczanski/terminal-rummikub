@@ -49,7 +49,7 @@ public class Rack {
         if(which == 2){
             throw new RackException("You don't have two tiles with id " + id + " on your rack!");
         }
-        throw new RackException("There is no such tile as " + id + " on your rack.");
+        throw new RackException("There is no such tile as " + id + " on your rack!");
     }
     private boolean isGrouped(Tile t){
         for(ArrayList<Tile> group : groups){
@@ -98,6 +98,20 @@ public class Rack {
     }
     public boolean isEmpty(){
         return tiles.isEmpty();
+    }
+    public Rack rackBackup(){
+        Rack backup = new Rack();
+        for(Tile t : tiles){
+            backup.tiles.add(t);
+        }
+        for(ArrayList<Tile> group : groups){
+            ArrayList<Tile> g = new ArrayList<Tile>();
+            for(Tile t : group){
+                g.add(t);
+            }
+            backup.groups.add(g);
+        }
+        return backup;
     }
     public String toString(){
         String s = "";

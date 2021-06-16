@@ -47,6 +47,13 @@ public class Game {
         for(int i = 0; i < 15; i++){
             players[0].rack.addTile(pile.draw());
         }
-        players[0].myTurn(this);
+        for(int i = 0; i < 3; i++){
+            System.out.println();
+            System.out.println("=========");
+            System.out.println("Your turn");
+            System.out.println("=========");
+            System.out.println();
+            players[0].myTurn(this);
+        }
     }
 }

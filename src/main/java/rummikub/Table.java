@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class Table {
     ArrayList<ArrayList<Tile>> sequences = new ArrayList<ArrayList<Tile>>();
+    ArrayList<Tile> takenTiles = new ArrayList<Tile>();
     
     private boolean areRun(ArrayList<Tile> tiles){
         if(tiles.size() < 3){
@@ -54,6 +55,41 @@ public class Table {
                 throw new TableException("Sequence " + sequenceNumber + " is not valid after adding the tile!");
             }
         }
+    }
+    public Table tableBackup(){
+        Table backup = new Table();
+        for(ArrayList<Tile> sequence : sequences){
+            ArrayList<Tile> s = new ArrayList<Tile>();
+            for(Tile t : sequence){
+                s.add(t);
+            }
+            backup.sequences.add(s);
+        }
+        return backup;
+    }
+    public Tile takeTile(int sequenceNumber, String id) throws TableException {
+        if(sequenceNumber < 1 || sequenceNumber > sequences.size()){
+            throw new TableException("Invalid sequence number!");
+        }
+        ArrayList<Tile> sequence = sequences.get(sequenceNumber - 1);
+        ArrayList<Tile> cp = new ArrayList<Tile>();
+        for(Tile tile : sequence){
+            cp.add(tile);
+        }
+        for (Tile tile : cp) {
+            if (tile.hasId(id)) {
+                takenTiles.add(tile);
+                sequence.remove(tile);
+                return tile;
+            }
+        }
+        throw new TableException("There is no such tile as " + id + " in the sequence!");
+    }
+    public boolean areSequencesValid(){
+        if(takenTiles.isEmpty()){
+            
+        }
+        return false;
     }
     public String toString(){
         int i = 1;
