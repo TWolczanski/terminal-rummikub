@@ -2,6 +2,7 @@ package rummikub;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 public class Game {
     Table table = new Table();
@@ -47,7 +48,52 @@ public class Game {
         for(int i = 0; i < 15; i++){
             players[0].rack.addTile(pile.draw());
         }
-        for(int i = 0; i < 3; i++){
+        Random r = new Random();
+        ArrayList<String> colors = new ArrayList<String>();
+        colors.add("red");
+        colors.add("green");
+        colors.add("yellow");
+        colors.add("blue");
+        for (int i = 0; i < 6; i++) {
+            int type = r.nextInt(2);
+            Collections.shuffle(colors);
+            ArrayList<Tile> tiles = new ArrayList<Tile>();
+            if(type == 0){
+                int number = r.nextInt(13) + 1;
+                int len = r.nextInt(2) + 3;
+                for(int j = 0; j < len; j++){
+                    Tile t = new Tile(colors.get(j), number);
+                    for(Tile tile : pile.tiles){
+                        if(tile.sameAs(t)){
+                            t = tile;
+                        }
+                    }
+                    tiles.add(t);
+                    pile.tiles.remove(t);
+                }
+            }
+            else {
+                int number = r.nextInt(10) + 1;
+                int len = r.nextInt(13 - (number + 1)) + 3;
+                String color = colors.get(0);
+                for(int j = 0; j < len; j++){
+                    Tile t = new Tile(color, number + j);
+                    for(Tile tile : pile.tiles){
+                        if(tile.sameAs(t)){
+                            t = tile;
+                        }
+                    }
+                    tiles.add(t);
+                    pile.tiles.remove(t);
+                }
+            }
+            try {
+                table.putTiles(tiles);
+            } catch (BadArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        while(!pile.isEmpty()){
             System.out.println();
             System.out.println("=========");
             System.out.println("Your turn");

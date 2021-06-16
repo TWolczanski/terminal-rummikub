@@ -6,23 +6,20 @@ public class Table {
     ArrayList<ArrayList<Tile>> sequences = new ArrayList<ArrayList<Tile>>();
     ArrayList<Tile> takenTiles = new ArrayList<Tile>();
     
-    private boolean areRun(ArrayList<Tile> tiles){
-        if(tiles.size() < 3){
-            return false;
+    private boolean isRun(ArrayList<Tile> sequence){
+        if(sequence.size() == 1){
+            return true;
         }
-        for(int i = 1; i < tiles.size(); i++){
-            if(tiles.get(i).number != tiles.get(i - 1).number + 1){
+        for(int i = 1; i < sequence.size(); i++){
+            if(sequence.get(i).number != sequence.get(i - 1).number + 1){
                 return false;
             }
         }
         return true;
     }
-    private boolean areGroup(ArrayList<Tile> tiles){
-        if(tiles.size() != 3 && tiles.size() != 4){
-            return false;
-        }
-        for(Tile t1 : tiles){
-            for(Tile t2 : tiles){
+    private boolean isGroup(ArrayList<Tile> sequence){
+        for(Tile t1 : sequence){
+            for(Tile t2 : sequence){
                 if(t1 != t2 && (t1.sameColorAs(t2) || t1.number != t2.number)){
                     return false;
                 }
@@ -30,31 +27,38 @@ public class Table {
         }
         return true;
     }
-    private boolean areSequence(ArrayList<Tile> tiles){
-        return areRun(tiles) || areGroup(tiles);
+    private boolean isSequenceValid(ArrayList<Tile> sequence){
+        if(sequence.size() < 3){
+            return false;
+        }
+        return isRun(sequence) || isGroup(sequence);
     }
-    public void putTiles(ArrayList<Tile> tiles) throws TableException {
-        if(areSequence(tiles)){
+    public void putTiles(ArrayList<Tile> tiles) throws BadArgumentException {
+        if(isSequenceValid(tiles)){
+            for(Tile tile : tiles){
+                takenTiles.remove(tile);
+            }
             sequences.add(tiles);
         }
         else {
-            throw new TableException("The tiles don't make a valid sequence!");
+            throw new BadArgumentException("The tiles don't make a valid sequence!");
         }
     }
-    public void addTile(int sequenceNumber, Tile tile) throws TableException {
+    public void addTile(int sequenceNumber, Tile tile) throws BadArgumentException {
         if(sequenceNumber < 1 || sequenceNumber > sequences.size()){
-            throw new TableException("Invalid sequence number!");
+            throw new BadArgumentException("Invalid sequence number!");
         }
-        ArrayList<Tile> tiles = sequences.get(sequenceNumber - 1);
-        tiles.add(0, tile);
-        if(!areSequence(tiles)){
-            tiles.remove(0);
-            tiles.add(tile);
-            if(!areSequence(tiles)){
-                tiles.remove(tiles.size() - 1);
-                throw new TableException("Sequence " + sequenceNumber + " is not valid after adding the tile!");
+        ArrayList<Tile> sequence = sequences.get(sequenceNumber - 1);
+        sequence.add(0, tile);
+        if(!isRun(sequence) && !isGroup(sequence)){
+            sequence.remove(0);
+            sequence.add(tile);
+            if(!isRun(sequence) && !isGroup(sequence)){
+                sequence.remove(sequence.size() - 1);
+                throw new BadArgumentException("You can't add such tile to this sequence!");
             }
         }
+        takenTiles.remove(tile);
     }
     public Table tableBackup(){
         Table backup = new Table();
@@ -67,27 +71,39 @@ public class Table {
         }
         return backup;
     }
-    public Tile takeTile(int sequenceNumber, String id) throws TableException {
+    public Tile takeTile(int sequenceNumber, String id) throws BadArgumentException {
         if(sequenceNumber < 1 || sequenceNumber > sequences.size()){
-            throw new TableException("Invalid sequence number!");
+            throw new BadArgumentException("Invalid sequence number!");
         }
         ArrayList<Tile> sequence = sequences.get(sequenceNumber - 1);
-        ArrayList<Tile> cp = new ArrayList<Tile>();
-        for(Tile tile : sequence){
-            cp.add(tile);
+        Tile tile = sequence.get(0);
+        if(tile.hasId(id)){
+            takenTiles.add(tile);
+            sequence.remove(0);
         }
-        for (Tile tile : cp) {
+        else {
+            tile = sequence.get(sequence.size() - 1);
             if (tile.hasId(id)) {
                 takenTiles.add(tile);
-                sequence.remove(tile);
-                return tile;
+                sequence.remove(sequence.size() - 1);
+            }
+            else {
+                throw new BadArgumentException("There is no such tile as " + id + " available to take!");
             }
         }
-        throw new TableException("There is no such tile as " + id + " in the sequence!");
+        if (sequence.size() == 0) {
+            sequences.remove(sequence);
+        }
+        return tile;
     }
-    public boolean areSequencesValid(){
+    public boolean isTableValid(){
         if(takenTiles.isEmpty()){
-            
+            for(ArrayList<Tile> sequence : sequences){
+                if(!isSequenceValid(sequence)){
+                    return false;
+                }
+            }
+            return true;
         }
         return false;
     }
@@ -96,7 +112,11 @@ public class Table {
         String s = "";
         for(ArrayList<Tile> sequence : sequences){
             s += "\n";
-            s = s + Integer.toString(i) + ": \n";
+            s = s + "#" + Integer.toString(i);
+            if(!isSequenceValid(sequence)){
+                s += " (not valid)";
+            }
+            s += "\n";
             for (Tile t : sequence) {
                 s += " __ ";
             }
@@ -110,6 +130,21 @@ public class Table {
             }
             s += "\n";
             i++;
+        }
+        if(!takenTiles.isEmpty()){
+            s += "\n Taken tiles: \n";
+            for (Tile t : takenTiles) {
+                s += " __ ";
+            }
+            s += "\n";
+            for (Tile t : takenTiles) {
+                s = s + "|" + t.toString() + "|";
+            }
+            s += "\n";
+            for (Tile t : takenTiles) {
+                s += "|__|";
+            }
+            s += "\n";
         }
         return s;
     }

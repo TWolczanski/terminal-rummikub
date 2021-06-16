@@ -24,7 +24,7 @@ public class Rack {
             groups.remove(containingGroup);
         }
     }
-    public Tile getTile(String id, int which) throws RackException {
+    public Tile getTile(String id, int which) throws BadArgumentException {
         int i = which;
         for (ArrayList<Tile> group : groups) {
             for (Tile tile : group) {
@@ -47,9 +47,9 @@ public class Rack {
             }
         }
         if(which == 2){
-            throw new RackException("You don't have two tiles with id " + id + " on your rack!");
+            throw new BadArgumentException("You don't have two tiles with id " + id + " on your rack!");
         }
-        throw new RackException("There is no such tile as " + id + " on your rack!");
+        throw new BadArgumentException("There is no such tile as " + id + " on your rack!");
     }
     private boolean isGrouped(Tile t){
         for(ArrayList<Tile> group : groups){
@@ -61,18 +61,18 @@ public class Rack {
         }
         return false;
     }
-    public void groupTiles(ArrayList<Tile> tiles) throws RackException {
+    public void groupTiles(ArrayList<Tile> tiles) throws BadArgumentException {
         if(tiles.size() < 2){
-            throw new RackException("You can't group only one tile!");
+            throw new BadArgumentException("You can't group only one tile!");
         }
         for(Tile t : tiles){
             if(isGrouped(t)){
-                throw new RackException("One of the tiles is already grouped!");
+                throw new BadArgumentException("One of the tiles is already grouped!");
             }
         }
         groups.add(0, tiles);
     }
-    public void ungroupTiles(ArrayList<Tile> tiles) throws RackException {
+    public void ungroupTiles(ArrayList<Tile> tiles) throws BadArgumentException {
         boolean found = false;
         for(ArrayList<Tile> group : groups){
             if(tiles.size() == group.size()){
@@ -93,7 +93,7 @@ public class Rack {
             groups.remove(tiles);
         }
         else {
-            throw new RackException("There is no such group on your rack!");
+            throw new BadArgumentException("There is no such group on your rack!");
         }
     }
     public boolean isEmpty(){
@@ -119,7 +119,7 @@ public class Rack {
             for(Tile t : group){
                 s += " __ ";
             }
-            s += " ";
+            s += "  ";
         }
         for(Tile t : tiles){
             if(!isGrouped(t)){
@@ -131,7 +131,7 @@ public class Rack {
             for(Tile t : group){
                 s = s + "|" + t.toString() + "|";
             }
-            s += " ";
+            s += "  ";
         }
         for(Tile t : tiles){
             if(!isGrouped(t)){
@@ -143,7 +143,7 @@ public class Rack {
             for(Tile t : group){
                 s += "|__|";
             }
-            s += " ";
+            s += "  ";
         }
         for(Tile t : tiles){
             if(!isGrouped(t)){
