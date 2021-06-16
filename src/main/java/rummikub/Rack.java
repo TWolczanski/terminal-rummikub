@@ -24,7 +24,7 @@ public class Rack {
             groups.remove(containingGroup);
         }
     }
-    public Tile getTile(String id, int which) throws InvalidTileException {
+    public Tile getTile(String id, int which) throws RackException {
         int i = which;
         for (ArrayList<Tile> group : groups) {
             for (Tile tile : group) {
@@ -47,9 +47,9 @@ public class Rack {
             }
         }
         if(which == 2){
-            throw new InvalidTileException("You don't have two tiles with id " + id + " on your rack!");
+            throw new RackException("You don't have two tiles with id " + id + " on your rack!");
         }
-        throw new InvalidTileException("There is no such tile as " + id + " on your rack.");
+        throw new RackException("There is no such tile as " + id + " on your rack.");
     }
     private boolean isGrouped(Tile t){
         for(ArrayList<Tile> group : groups){
@@ -61,18 +61,18 @@ public class Rack {
         }
         return false;
     }
-    public void groupTiles(ArrayList<Tile> tiles) throws InvalidTileException {
+    public void groupTiles(ArrayList<Tile> tiles) throws RackException {
         if(tiles.size() < 2){
-            throw new InvalidTileException("You can't group only one tile!");
+            throw new RackException("You can't group only one tile!");
         }
         for(Tile t : tiles){
             if(isGrouped(t)){
-                throw new InvalidTileException("One of the tiles is already grouped!");
+                throw new RackException("One of the tiles is already grouped!");
             }
         }
         groups.add(0, tiles);
     }
-    public void ungroupTiles(ArrayList<Tile> tiles) throws InvalidTileException {
+    public void ungroupTiles(ArrayList<Tile> tiles) throws RackException {
         boolean found = false;
         for(ArrayList<Tile> group : groups){
             if(tiles.size() == group.size()){
@@ -93,8 +93,11 @@ public class Rack {
             groups.remove(tiles);
         }
         else {
-            throw new InvalidTileException("There is no such group on your rack!");
+            throw new RackException("There is no such group on your rack!");
         }
+    }
+    public boolean isEmpty(){
+        return tiles.isEmpty();
     }
     public String toString(){
         String s = "";

@@ -37,30 +37,30 @@ public class Player {
         while(!end){
             System.out.print("> ");
             String input = scanner.nextLine();
-            System.out.println();
             String[] s = input.split("\\s+");
             String cmd = s[0];
-            // String[] args = new String[s.length - 1];
             switch(cmd){
                 case "end":
                     end = true;
                     break;
                 case "rack":
+                    System.out.println();
                     System.out.println(rack);
                     System.out.println();
                     break;
                 case "table":
                     System.out.println(game.table);
-                    System.out.println();
                     break;
                 case "draw":
                     if(game.pile.isEmpty()){
+                        System.out.println();
                         System.out.println("There are no more tiles on the pile!");
                         System.out.println();
                     }
                     else if (s.length == 1) {
                         Tile t = game.pile.draw();
                         rack.addTile(t);
+                        System.out.println();
                         System.out.println("You drew:");
                         System.out.println(" __ ");
                         System.out.println("|" + t + "|");
@@ -85,14 +85,16 @@ public class Player {
                                         tiles.add(rack.getTile(s[i], 2));
                                     }
                                 } else {
-                                    throw new InvalidTileException(s[i] + " is not a valid tile id.");
+                                    throw new InputException(s[i] + " is not a valid tile id.");
                                 }
                             }
                             rack.groupTiles(tiles);
+                            System.out.println();
                             System.out.println("Your rack:");
                             System.out.println(rack);
                             System.out.println();
-                        } catch (InvalidTileException e) {
+                        } catch (InputException | RackException e) {
+                            System.out.println();
                             System.out.println(e.getMessage());
                             System.out.println();
                         }
@@ -112,14 +114,16 @@ public class Player {
                                         tiles.add(rack.getTile(s[i], 2));
                                     }
                                 } else {
-                                    throw new InvalidTileException(s[i] + " is not a valid tile id.");
+                                    throw new InputException(s[i] + " is not a valid tile id.");
                                 }
                             }
                             rack.ungroupTiles(tiles);
+                            System.out.println();
                             System.out.println("Your rack:");
                             System.out.println(rack);
                             System.out.println();
-                        } catch (InvalidTileException e) {
+                        } catch (InputException | RackException e) {
+                            System.out.println();
                             System.out.println(e.getMessage());
                             System.out.println();
                         }
@@ -140,24 +144,69 @@ public class Player {
                                         tiles.add(rack.getTile(s[i], 2));
                                     }
                                 } else {
-                                    throw new InvalidTileException(s[i] + " is not a valid tile id.");
+                                    throw new InputException(s[i] + " is not a valid tile id.");
                                 }
                             }
                             game.table.putTiles(tiles);
                             for (Tile t : tiles) {
                                 rack.removeTile(t);
                             }
+                            System.out.println();
                             System.out.println("Table:");
                             System.out.println(game.table);
-                            System.out.println();
                             System.out.println("Your rack:");
                             System.out.println(rack);
                             System.out.println();
-                        } catch (InvalidTileException e) {
+                        } catch (InputException | RackException | TableException e) {
                             System.out.println(e.getMessage());
                             System.out.println();
                         }
                     }
+                    break;
+                case "add":
+                    if(s.length == 3){
+                        try {
+                            if (isValid(s[2])) {
+                                Tile t = rack.getTile(s[2], 1);
+                                if(s[1].matches("\\d+")){
+                                    game.table.addTile(Integer.parseInt(s[1]), t);
+                                    rack.removeTile(t);
+                                }
+                                else {
+                                    throw new InputException(s[1] + "is not a valid sequence number!");
+                                }
+                            } else if (s[2].length() == 3 || s[2].length() == 4) {
+                                char fst = s[2].charAt(0);
+                                s[2] = s[2].substring(1);
+                                if (fst == 50 && isValid(s[2])) {
+                                    Tile t = rack.getTile(s[2], 2);
+                                    if(s[1].matches("\\d+")){
+                                        game.table.addTile(Integer.parseInt(s[1]), t);
+                                        rack.removeTile(t);
+                                    }
+                                    else {
+                                        throw new InputException(s[1] + "is not a valid sequence number!");
+                                    }
+                                }
+                            } else {
+                                throw new InputException(s[2] + " is not a valid tile id!");
+                            }
+                            System.out.println();
+                            System.out.println("Table:");
+                            System.out.println(game.table);
+                            System.out.println("Your rack:");
+                            System.out.println(rack);
+                            System.out.println();
+                        }
+                        catch(InputException | RackException | TableException e){
+                            System.out.println();
+                            System.out.println(e.getMessage());
+                            System.out.println();
+                        }
+                    }
+                    break;
+                default:
+                    System.out.println();
                     break;
             }
         }

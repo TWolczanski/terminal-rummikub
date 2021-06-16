@@ -29,12 +29,30 @@ public class Table {
         }
         return true;
     }
-    public void putTiles(ArrayList<Tile> tiles) throws InvalidTileException {
-        if(areRun(tiles) || areGroup(tiles)){
+    private boolean areSequence(ArrayList<Tile> tiles){
+        return areRun(tiles) || areGroup(tiles);
+    }
+    public void putTiles(ArrayList<Tile> tiles) throws TableException {
+        if(areSequence(tiles)){
             sequences.add(tiles);
         }
         else {
-            throw new InvalidTileException("The tiles don't make a run nor group!");
+            throw new TableException("The tiles don't make a valid sequence!");
+        }
+    }
+    public void addTile(int sequenceNumber, Tile tile) throws TableException {
+        if(sequenceNumber < 1 || sequenceNumber > sequences.size()){
+            throw new TableException("Invalid sequence number!");
+        }
+        ArrayList<Tile> tiles = sequences.get(sequenceNumber - 1);
+        tiles.add(0, tile);
+        if(!areSequence(tiles)){
+            tiles.remove(0);
+            tiles.add(tile);
+            if(!areSequence(tiles)){
+                tiles.remove(tiles.size() - 1);
+                throw new TableException("Sequence " + sequenceNumber + " is not valid after adding the tile!");
+            }
         }
     }
     public String toString(){
