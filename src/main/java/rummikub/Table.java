@@ -76,6 +76,34 @@ public class Table {
             }
         }
     }
+    public void addTiles(int sequenceNumber, ArrayList<Tile> tiles) throws BadArgumentException {
+        if(sequenceNumber < 1 || sequenceNumber > sequences.size()){
+            throw new BadArgumentException("Invalid sequence number!");
+        }
+        Table backup = tableBackup();
+        try {
+            for (Tile tile : tiles) {
+                addTile(sequenceNumber, tile);
+            }
+        }
+        catch (BadArgumentException e){
+            sequences = backup.sequences;
+            missingTiles = backup.missingTiles;
+            try {
+                for (int i = tiles.size() - 1; i >= 0; i--) {
+                    addTile(sequenceNumber, tiles.get(i));
+                }
+            }
+            catch(BadArgumentException e2){
+                sequences = backup.sequences;
+                missingTiles = backup.missingTiles;
+                if(tiles.size() == 1){
+                    throw new BadArgumentException("You can't add this tile to this sequence!");
+                }
+                throw new BadArgumentException("You can't add these tiles to this sequence!");
+            }
+        }
+    }
     public Tile takeTile(int sequenceNumber, String id) throws BadArgumentException {
         if(sequenceNumber < 1 || sequenceNumber > sequences.size()){
             throw new BadArgumentException("Invalid sequence number!");
@@ -113,6 +141,37 @@ public class Table {
         else {
             throw new BadArgumentException("There is no such tile as " + id + " available to take!");
         }
+    }
+    public ArrayList<Tile> takeTiles(int sequenceNumber, String[] ids) throws BadArgumentException {
+        if(sequenceNumber < 1 || sequenceNumber > sequences.size()){
+            throw new BadArgumentException("Invalid sequence number!");
+        }
+        Table backup = tableBackup();
+        ArrayList<Tile> tiles = new ArrayList<Tile>();
+        try {
+            for(int i = 0; i < ids.length; i++){
+                tiles.add(takeTile(sequenceNumber, ids[i]));
+            }
+        }
+        catch (BadArgumentException e){
+            sequences = backup.sequences;
+            missingTiles = backup.missingTiles;
+            tiles.clear();
+            try {
+                for (int i = ids.length - 1; i >= 0; i--) {
+                    tiles.add(takeTile(sequenceNumber, ids[i]));
+                }
+            }
+            catch (BadArgumentException e2){
+                sequences = backup.sequences;
+                missingTiles = backup.missingTiles;
+                if(ids.length == 1){
+                    throw new BadArgumentException("You can't take this tile!");
+                }
+                throw new BadArgumentException("You can't take these tiles!");
+            }
+        }
+        return tiles;
     }
     public void splitSequence(int sequenceNumber, String id) throws BadArgumentException {
         if(sequenceNumber < 1 || sequenceNumber > sequences.size()){

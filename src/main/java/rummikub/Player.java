@@ -58,6 +58,7 @@ public class Player {
                             rack = rackBackup;
                             throw new BadInputException("Some sequences on the table are not valid! The table and your rack will be now reset to the state from the beginning of your turn.");
                         }
+                        System.out.println();
                     }
                 }
                 else if (cmd.equals("rack") && s.length == 1) {
@@ -157,29 +158,28 @@ public class Player {
                     System.out.println();
                     canDraw = false;
                 }
-                else if (cmd.equals("add") && s.length == 3) {
-                    if (isValid(s[2])) {
-                        Tile t = rack.getTile(s[2], 1);
-                        if (s[1].matches("\\d+")) {
-                            game.table.addTile(Integer.parseInt(s[1]), t);
-                            rack.removeTile(t);
-                        } else {
-                            throw new BadInputException(s[1] + "is not a valid sequence number!");
-                        }
-                    } else if (s[2].length() == 3 || s[2].length() == 4) {
-                        char fst = s[2].charAt(0);
-                        s[2] = s[2].substring(1);
-                        if (fst == 50 && isValid(s[2])) {
-                            Tile t = rack.getTile(s[2], 2);
-                            if (s[1].matches("\\d+")) {
-                                game.table.addTile(Integer.parseInt(s[1]), t);
-                                rack.removeTile(t);
+                else if (cmd.equals("add") && s.length > 2) {
+                    if (s[1].matches("\\d+")) {
+                        ArrayList<Tile> tiles = new ArrayList<Tile>();
+                        for (int i = 2; i < s.length; i++) {
+                            if (isValid(s[i])) {
+                                tiles.add(rack.getTile(s[i], 1));
+                            } else if (s[i].length() == 3 || s[i].length() == 4) {
+                                char fst = s[i].charAt(0);
+                                s[i] = s[i].substring(1);
+                                if (fst == 50 && isValid(s[i])) {
+                                    tiles.add(rack.getTile(s[i], 2));
+                                }
                             } else {
-                                throw new BadInputException(s[1] + "is not a valid sequence number!");
+                                throw new BadInputException(s[i] + " is not a valid tile id.");
                             }
                         }
+                        game.table.addTiles(Integer.parseInt(s[1]), tiles);
+                        for (Tile t : tiles) {
+                            rack.removeTile(t);
+                        }
                     } else {
-                        throw new BadInputException(s[2] + " is not a valid tile id!");
+                        throw new BadInputException(s[1] + "is not a valid sequence number!");
                     }
                     System.out.println();
                     System.out.println("Table:");
@@ -189,27 +189,28 @@ public class Player {
                     System.out.println();
                     canDraw = false;
                 }
-                else if (cmd.equals("take") && s.length == 3) {
-                    if (isValid(s[2])) {
-                        if (s[1].matches("\\d+")) {
-                            Tile t = game.table.takeTile(Integer.parseInt(s[1]), s[2]);
-                            rack.addTile(t);
-                        } else {
-                            throw new BadInputException(s[1] + "is not a valid sequence number!");
-                        }
-                    } else if (s[2].length() == 3 || s[2].length() == 4) {
-                        char fst = s[2].charAt(0);
-                        s[2] = s[2].substring(1);
-                        if (fst == 50 && isValid(s[2])) {
-                            if (s[1].matches("\\d+")) {
-                                Tile t = game.table.takeTile(Integer.parseInt(s[1]), s[2]);
-                                rack.addTile(t);
+                else if (cmd.equals("take") && s.length > 2) {
+                    if (s[1].matches("\\d+")) {
+                        String[] ids = new String[s.length - 2];
+                        for (int i = 2; i < s.length; i++) {
+                            if (isValid(s[i])) {
+                                ids[i - 2] = s[i];
+                            } else if (s[i].length() == 3 || s[i].length() == 4) {
+                                char fst = s[i].charAt(0);
+                                s[i] = s[i].substring(1);
+                                if (fst == 50 && isValid(s[i])) {
+                                    ids[i - 2] = s[i];
+                                }
                             } else {
-                                throw new BadInputException(s[1] + "is not a valid sequence number!");
+                                throw new BadInputException(s[i] + " is not a valid tile id.");
                             }
                         }
+                        ArrayList<Tile> tiles = game.table.takeTiles(Integer.parseInt(s[1]), ids);
+                        for (Tile t : tiles) {
+                            rack.addTile(t);
+                        }
                     } else {
-                        throw new BadInputException(s[2] + " is not a valid tile id!");
+                        throw new BadInputException(s[1] + "is not a valid sequence number!");
                     }
                     System.out.println();
                     System.out.println("Table:");

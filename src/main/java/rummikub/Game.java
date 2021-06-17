@@ -94,7 +94,6 @@ public class Game {
             }
         }
         while(!pile.isEmpty() && !players[0].rack.isEmpty()){
-            System.out.println();
             System.out.println("=========");
             System.out.println("Your turn");
             System.out.println("=========");
