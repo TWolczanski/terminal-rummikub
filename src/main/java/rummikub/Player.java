@@ -44,61 +44,51 @@ public class Player {
             String[] s = input.split("\\s+");
             String cmd = s[0];
             
-            if(cmd.equals("quit") && s.length == 1){
-                System.exit(0);
-            }
-            else if(cmd.equals("end") && s.length == 1){
-                if(canDraw){
-                    System.out.println();
-                    System.out.println("You have to draw or make at least one play in order to end your turn!");
-                    System.out.println();
+            try {
+                if (cmd.equals("quit") && s.length == 1) {
+                    System.exit(0);
                 }
-                else {
-                    if (!game.table.isTableValid()) {
-                        System.out.println();
-                        System.out.println("Some sequences on the table are not valid! The table and your rack will be now reset to the state from the beginning of your turn.");
-                        game.table = tableBackup;
-                        rack = rackBackup;
+                else if (cmd.equals("end") && s.length == 1) {
+                    if (canDraw) {
+                        throw new BadInputException("You have to draw or make at least one play in order to end your turn!");
+                    } else {
+                        end = true;
+                        if (!game.table.isTableValid()) {
+                            game.table = tableBackup;
+                            rack = rackBackup;
+                            throw new BadInputException("Some sequences on the table are not valid! The table and your rack will be now reset to the state from the beginning of your turn.");
+                        }
                     }
-                    end = true;
                 }
-            }
-            else if(cmd.equals("rack") && s.length == 1){
-                System.out.println();
-                System.out.println(rack);
-                System.out.println();
-            }
-            else if(cmd.equals("table") && s.length == 1){
-                System.out.println(game.table);
-            }
-            else if(cmd.equals("draw") && s.length == 1){
-                if(game.pile.isEmpty()){
+                else if (cmd.equals("rack") && s.length == 1) {
                     System.out.println();
-                    System.out.println("There are no more tiles on the pile!");
-                    System.out.println();
-                }
-                else if(!canDraw){
-                    System.out.println();
-                    System.out.println("You can't draw - you've made some plays this turn!");
-                    System.out.println();
-                }
-                else {
-                    Tile t = game.pile.draw();
-                    rack.addTile(t);
-                    end = true;
-                    System.out.println();
-                    System.out.println("You drew:");
-                    System.out.println(" __ ");
-                    System.out.println("|" + t + "|");
-                    System.out.println("|__|");
-                    System.out.println();
-                    System.out.println("Your rack:");
                     System.out.println(rack);
                     System.out.println();
                 }
-            }
-            else if(cmd.equals("group") && s.length > 1){
-                try {
+                else if (cmd.equals("table") && s.length == 1) {
+                    System.out.println(game.table);
+                }
+                else if (cmd.equals("draw") && s.length == 1) {
+                    if (game.pile.isEmpty()) {
+                        throw new BadInputException("There are no more tiles on the pile!");
+                    } else if (!canDraw) {
+                        throw new BadInputException("You can't draw - you've made some plays this turn!");
+                    } else {
+                        Tile t = game.pile.draw();
+                        rack.addTile(t);
+                        end = true;
+                        System.out.println();
+                        System.out.println("You drew:");
+                        System.out.println(" __ ");
+                        System.out.println("|" + t + "|");
+                        System.out.println("|__|");
+                        System.out.println();
+                        System.out.println("Your rack:");
+                        System.out.println(rack);
+                        System.out.println();
+                    }
+                }
+                else if (cmd.equals("group") && s.length > 1) {
                     ArrayList<Tile> tiles = new ArrayList<Tile>();
                     for (int i = 1; i < s.length; i++) {
                         if (isValid(s[i])) {
@@ -118,14 +108,8 @@ public class Player {
                     System.out.println("Your rack:");
                     System.out.println(rack);
                     System.out.println();
-                } catch (BadInputException | BadArgumentException e) {
-                    System.out.println();
-                    System.out.println(e.getMessage());
-                    System.out.println();
                 }
-            }
-            else if(cmd.equals("ungroup") && s.length > 1){
-                try {
+                else if (cmd.equals("ungroup") && s.length > 1) {
                     ArrayList<Tile> tiles = new ArrayList<Tile>();
                     for (int i = 1; i < s.length; i++) {
                         if (isValid(s[i])) {
@@ -145,15 +129,8 @@ public class Player {
                     System.out.println("Your rack:");
                     System.out.println(rack);
                     System.out.println();
-                } catch (BadInputException | BadArgumentException e) {
-                    System.out.println();
-                    System.out.println(e.getMessage());
-                    System.out.println();
                 }
-        
-            }
-            else if(cmd.equals("put") && s.length > 1){
-                try {
+                else if (cmd.equals("put") && s.length > 1) {
                     ArrayList<Tile> tiles = new ArrayList<Tile>();
                     for (int i = 1; i < s.length; i++) {
                         if (isValid(s[i])) {
@@ -179,21 +156,14 @@ public class Player {
                     System.out.println(rack);
                     System.out.println();
                     canDraw = false;
-                } catch (BadInputException | BadArgumentException e) {
-                    System.out.println();
-                    System.out.println(e.getMessage());
-                    System.out.println();
                 }
-            }
-            else if(cmd.equals("add") && s.length == 3){
-                try {
+                else if (cmd.equals("add") && s.length == 3) {
                     if (isValid(s[2])) {
                         Tile t = rack.getTile(s[2], 1);
-                        if(s[1].matches("\\d+")){
+                        if (s[1].matches("\\d+")) {
                             game.table.addTile(Integer.parseInt(s[1]), t);
                             rack.removeTile(t);
-                        }
-                        else {
+                        } else {
                             throw new BadInputException(s[1] + "is not a valid sequence number!");
                         }
                     } else if (s[2].length() == 3 || s[2].length() == 4) {
@@ -201,11 +171,10 @@ public class Player {
                         s[2] = s[2].substring(1);
                         if (fst == 50 && isValid(s[2])) {
                             Tile t = rack.getTile(s[2], 2);
-                            if(s[1].matches("\\d+")){
+                            if (s[1].matches("\\d+")) {
                                 game.table.addTile(Integer.parseInt(s[1]), t);
                                 rack.removeTile(t);
-                            }
-                            else {
+                            } else {
                                 throw new BadInputException(s[1] + "is not a valid sequence number!");
                             }
                         }
@@ -220,31 +189,22 @@ public class Player {
                     System.out.println();
                     canDraw = false;
                 }
-                catch(BadInputException | BadArgumentException e){
-                    System.out.println();
-                    System.out.println(e.getMessage());
-                    System.out.println();
-                }
-            }
-            else if(cmd.equals("take") && s.length == 3){
-                try {
+                else if (cmd.equals("take") && s.length == 3) {
                     if (isValid(s[2])) {
-                        if(s[1].matches("\\d+")){
+                        if (s[1].matches("\\d+")) {
                             Tile t = game.table.takeTile(Integer.parseInt(s[1]), s[2]);
                             rack.addTile(t);
-                        }
-                        else {
+                        } else {
                             throw new BadInputException(s[1] + "is not a valid sequence number!");
                         }
                     } else if (s[2].length() == 3 || s[2].length() == 4) {
                         char fst = s[2].charAt(0);
                         s[2] = s[2].substring(1);
                         if (fst == 50 && isValid(s[2])) {
-                            if(s[1].matches("\\d+")){
+                            if (s[1].matches("\\d+")) {
                                 Tile t = game.table.takeTile(Integer.parseInt(s[1]), s[2]);
                                 rack.addTile(t);
-                            }
-                            else {
+                            } else {
                                 throw new BadInputException(s[1] + "is not a valid sequence number!");
                             }
                         }
@@ -259,29 +219,20 @@ public class Player {
                     System.out.println();
                     canDraw = false;
                 }
-                catch(BadInputException | BadArgumentException e){
-                    System.out.println();
-                    System.out.println(e.getMessage());
-                    System.out.println();
-                }
-            }
-            else if(cmd.equals("split") && s.length == 3){
-                try {
+                else if (cmd.equals("split") && s.length == 3) {
                     if (isValid(s[2])) {
-                        if(s[1].matches("\\d+")){
+                        if (s[1].matches("\\d+")) {
                             game.table.splitSequence(Integer.parseInt(s[1]), s[2]);
-                        }
-                        else {
+                        } else {
                             throw new BadInputException(s[1] + "is not a valid sequence number!");
                         }
                     } else if (s[2].length() == 3 || s[2].length() == 4) {
                         char fst = s[2].charAt(0);
                         s[2] = s[2].substring(1);
                         if (fst == 50 && isValid(s[2])) {
-                            if(s[1].matches("\\d+")){
+                            if (s[1].matches("\\d+")) {
                                 game.table.splitSequence(Integer.parseInt(s[1]), s[2]);
-                            }
-                            else {
+                            } else {
                                 throw new BadInputException(s[1] + "is not a valid sequence number!");
                             }
                         }
@@ -295,14 +246,13 @@ public class Player {
                     System.out.println(rack);
                     System.out.println();
                     canDraw = false;
-                }
-                catch(BadInputException | BadArgumentException e){
-                    System.out.println();
-                    System.out.println(e.getMessage());
+                } else {
                     System.out.println();
                 }
             }
-            else {
+            catch(BadInputException | BadArgumentException e){
+                System.out.println();
+                System.out.println(e.getMessage());
                 System.out.println();
             }
         }
