@@ -201,6 +201,85 @@ public class Table {
             sequences.add(sequence2);
         }
     }
+    public void joinSequences(int sequenceNumber1, int sequenceNumber2) throws BadArgumentException {
+        if(sequenceNumber1 < 1 || sequenceNumber1 > sequences.size()){
+            throw new BadArgumentException("Invalid sequence number!");
+        }
+        if(sequenceNumber2 < 1 || sequenceNumber2 > sequences.size()){
+            throw new BadArgumentException("Invalid sequence number!");
+        }
+        ArrayList<Tile> sequence1 = sequences.get(sequenceNumber1 - 1);
+        ArrayList<Tile> sequence2 = sequences.get(sequenceNumber2 - 1);
+        ArrayList<Tile> sequence3 = new ArrayList<Tile>();
+        for (Tile t : sequence1) {
+            sequence3.add(t);
+        }
+        if(isRun(sequence1) && isRun(sequence2)){
+            try {
+                for (Tile t : sequence2) {
+                    sequence3.add(0, t);
+                    if (!isRun(sequence3)) {
+                        sequence3.remove(0);
+                        sequence3.add(t);
+                        if (!isRun(sequence3)) {
+                            throw new BadArgumentException("You can't join these two sequences!");
+                        }
+                    }
+                }
+            }
+            catch (BadArgumentException e){
+                sequence3.clear();
+                for (Tile t : sequence1) {
+                    sequence3.add(t);
+                }
+                for(int i = sequence2.size() - 1; i >= 0; i--){
+                    Tile t = sequence2.get(i);
+                    sequence3.add(0, t);
+                    if (!isRun(sequence3)) {
+                        sequence3.remove(0);
+                        sequence3.add(t);
+                        if (!isRun(sequence3)) {
+                            throw new BadArgumentException("You can't join these two sequences!");
+                        }
+                    }
+                }
+            }
+        }
+        else if(isGroup(sequence1) && isGroup(sequence2)){
+            for(Tile t : sequence2){
+                sequence3.add(t);
+                if(!isGroup(sequence3)){
+                    throw new BadArgumentException("You can't join these two sequences!");
+                }
+            }
+        }
+        else {
+            throw new BadArgumentException("You can't join these two sequences!");
+        }
+        sequences.remove(sequence1);
+        sequences.remove(sequence2);
+        sequences.add(sequence3);
+        /*
+        Table backup = tableBackup();
+        try {
+            addTiles(sequenceNumber1, sequence2);
+            ArrayList<Tile> sequence3 = new ArrayList<Tile>();
+            for(Tile t : sequence1){{
+            }
+                sequence3.add(t);
+            }
+            sequences.remove(sequence1);
+            sequences.remove(sequence2);
+            sequences.add(sequence3);
+            missingTiles = backup.missingTiles;
+        }
+        catch (BadArgumentException e){
+            sequences = backup.sequences;
+            missingTiles = backup.missingTiles;
+            throw new BadArgumentException("You can't join these two sequences!");
+        }
+        */
+    }
     public Table tableBackup(){
         Table backup = new Table();
         for(ArrayList<Tile> sequence : sequences){

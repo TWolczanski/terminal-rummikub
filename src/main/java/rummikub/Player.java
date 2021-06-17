@@ -56,7 +56,7 @@ public class Player {
                         if (!game.table.isTableValid()) {
                             game.table = tableBackup;
                             rack = rackBackup;
-                            throw new BadInputException("Some sequences on the table are not valid! The table and your rack will be now reset to the state from the beginning of your turn.");
+                            throw new BadInputException("You did something wrong this turn! Probably there are some missing tiles or some sequences on the table are not valid. The table and your rack will be now reset to the state from the beginning of your turn.");
                         }
                         System.out.println();
                     }
@@ -221,24 +221,23 @@ public class Player {
                     canDraw = false;
                 }
                 else if (cmd.equals("split") && s.length == 3) {
-                    if (isValid(s[2])) {
-                        if (s[1].matches("\\d+")) {
+                    if (s[1].matches("\\d+")) {
+                        if(isValid(s[2])){
                             game.table.splitSequence(Integer.parseInt(s[1]), s[2]);
-                        } else {
-                            throw new BadInputException(s[1] + "is not a valid sequence number!");
                         }
-                    } else if (s[2].length() == 3 || s[2].length() == 4) {
-                        char fst = s[2].charAt(0);
-                        s[2] = s[2].substring(1);
-                        if (fst == 50 && isValid(s[2])) {
-                            if (s[1].matches("\\d+")) {
+                        else if (s[2].length() == 3 || s[2].length() == 4) {
+                            char fst = s[2].charAt(0);
+                            s[2] = s[2].substring(1);
+                            if (fst == 50 && isValid(s[2])) {
                                 game.table.splitSequence(Integer.parseInt(s[1]), s[2]);
-                            } else {
-                                throw new BadInputException(s[1] + "is not a valid sequence number!");
                             }
                         }
-                    } else {
-                        throw new BadInputException(s[2] + " is not a valid tile id!");
+                        else {
+                            throw new BadInputException(s[2] + " is not a valid tile id!");
+                        }
+                    }
+                    else {
+                        throw new BadInputException(s[1] + "is not a valid sequence number!");
                     }
                     System.out.println();
                     System.out.println("Table:");
@@ -247,7 +246,23 @@ public class Player {
                     System.out.println(rack);
                     System.out.println();
                     canDraw = false;
-                } else {
+                }
+                else if (cmd.equals("join") && s.length == 3) {
+                    if (s[1].matches("\\d+") && s[2].matches("\\d+")) {
+                        game.table.joinSequences(Integer.parseInt(s[1]), Integer.parseInt(s[2]));
+                    }
+                    else {
+                        throw new BadInputException("One of the sequence ids is invalid!");
+                    }
+                    System.out.println();
+                    System.out.println("Table:");
+                    System.out.println(game.table);
+                    System.out.println("Your rack:");
+                    System.out.println(rack);
+                    System.out.println();
+                    canDraw = false;
+                }
+                else {
                     System.out.println();
                 }
             }
