@@ -62,12 +62,13 @@ public class Rack {
         return false;
     }
     public void groupTiles(ArrayList<Tile> tiles) throws BadArgumentException {
-        if(tiles.size() < 2){
+        if(tiles.size() == 1){
             throw new BadArgumentException("You can't group only one tile!");
         }
         for(Tile t : tiles){
             if(isGrouped(t)){
-                throw new BadArgumentException("One of the tiles is already grouped!");
+                removeTile(t);
+                addTile(t);
             }
         }
         groups.add(0, tiles);

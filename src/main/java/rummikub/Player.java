@@ -56,7 +56,6 @@ public class Player {
                         if (!game.table.isTableValid()) {
                             System.out.println();
                             System.out.println("Some sequences on the table are not valid! The table and your rack will be now reset to the state from the beginning of your turn.");
-                            System.out.println();
                             game.table = tableBackup;
                             rack = rackBackup;
                         }

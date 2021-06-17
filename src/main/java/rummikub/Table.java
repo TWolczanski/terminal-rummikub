@@ -35,8 +35,16 @@ public class Table {
     }
     public void putTiles(ArrayList<Tile> tiles) throws BadArgumentException {
         if(isSequenceValid(tiles)){
-            for(Tile tile : tiles){
-                takenTiles.remove(tile);
+            ArrayList<Tile> cp = new ArrayList<Tile>();
+            for (Tile t : takenTiles) {
+                cp.add(t);
+            }
+            for (Tile tile : tiles) {
+                for (Tile t : cp) {
+                    if (t.sameAs(tile)) {
+                        takenTiles.remove(t);
+                    }
+                }
             }
             sequences.add(tiles);
         }
@@ -58,7 +66,15 @@ public class Table {
                 throw new BadArgumentException("You can't add such tile to this sequence!");
             }
         }
-        takenTiles.remove(tile);
+        ArrayList<Tile> cp = new ArrayList<Tile>();
+        for (Tile t : takenTiles) {
+            cp.add(t);
+        }
+        for (Tile t : cp) {
+            if (t.sameAs(tile)) {
+                takenTiles.remove(t);
+            }
+        }
     }
     public Table tableBackup(){
         Table backup = new Table();
@@ -76,25 +92,38 @@ public class Table {
             throw new BadArgumentException("Invalid sequence number!");
         }
         ArrayList<Tile> sequence = sequences.get(sequenceNumber - 1);
-        Tile tile = sequence.get(0);
-        if(tile.hasId(id)){
-            takenTiles.add(tile);
-            sequence.remove(0);
+        boolean found = false;
+        if(isRun(sequence)){
+            Tile tile = sequence.get(0);
+            if (tile.hasId(id)) {
+                found = true;
+                takenTiles.add(tile);
+            } else {
+                tile = sequence.get(sequence.size() - 1);
+                if (tile.hasId(id)) {
+                    found = true;
+                    takenTiles.add(tile);
+                }
+            }
         }
         else {
-            tile = sequence.get(sequence.size() - 1);
-            if (tile.hasId(id)) {
-                takenTiles.add(tile);
-                sequence.remove(sequence.size() - 1);
-            }
-            else {
-                throw new BadArgumentException("There is no such tile as " + id + " available to take!");
+            for(Tile tile : sequence){
+                if(tile.hasId(id)){
+                    found = true;
+                    takenTiles.add(tile);
+                }
             }
         }
-        if (sequence.size() == 0) {
-            sequences.remove(sequence);
+        if (found) {
+            sequence.remove(takenTiles.get(takenTiles.size() - 1));
+            if (sequence.size() == 0) {
+                sequences.remove(sequence);
+            }
+            return takenTiles.get(takenTiles.size() - 1);
         }
-        return tile;
+        else {
+            throw new BadArgumentException("There is no such tile as " + id + " available to take!");
+        }
     }
     public boolean isTableValid(){
         if(takenTiles.isEmpty()){
