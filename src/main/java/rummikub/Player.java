@@ -6,6 +6,7 @@ import java.util.Scanner;
 public class Player {
     Rack rack = new Rack();
     String name;
+    boolean initialMeld = false;
     
     public Player(String name){
         this.name = name;
@@ -37,6 +38,8 @@ public class Player {
         Table tableBackup = game.table.tableBackup();
         boolean end = false;
         boolean canDraw = true;
+        // for the initial meld
+        int points = 0;
         
         while(!end){
             System.out.print("> ");
@@ -53,10 +56,22 @@ public class Player {
                         throw new BadInputException("You have to draw or make at least one play in order to end your turn!");
                     } else {
                         end = true;
-                        if (!game.table.isTableValid()) {
+                        if (!game.table.isTableValid() || (!initialMeld && points < 30)) {
+                            System.out.println("You did something wrong this turn! Probably there are some missing tiles or some sequences on the table are not valid. The table and your rack will be now reset to the state from the beginning of your turn. You will also draw one tile as a penalty.");
                             game.table = tableBackup;
                             rack = rackBackup;
-                            throw new BadInputException("You did something wrong this turn! Probably there are some missing tiles or some sequences on the table are not valid. The table and your rack will be now reset to the state from the beginning of your turn.");
+                            if(!game.pile.isEmpty()){
+                                Tile t = game.pile.draw();
+                                rack.addTile(t);
+                                System.out.println();
+                                System.out.println("You drew:");
+                                System.out.println(" __ ");
+                                System.out.println("|" + t + "|");
+                                System.out.println("|__|");
+                                System.out.println();
+                                System.out.println("Your rack:");
+                                System.out.println(rack);
+                            }
                         }
                         System.out.println();
                     }
@@ -148,6 +163,9 @@ public class Player {
                     }
                     game.table.putTiles(tiles);
                     for (Tile t : tiles) {
+                        if(!initialMeld){
+                            points += t.number;
+                        }
                         rack.removeTile(t);
                     }
                     System.out.println();
@@ -159,6 +177,9 @@ public class Player {
                     canDraw = false;
                 }
                 else if (cmd.equals("add") && s.length > 2) {
+                    if(!initialMeld){
+                        throw new BadInputException("You have to make the initial meld before you can manipulate the tiles on the table!");
+                    }
                     if (s[1].matches("\\d+")) {
                         ArrayList<Tile> tiles = new ArrayList<Tile>();
                         for (int i = 2; i < s.length; i++) {
@@ -190,6 +211,9 @@ public class Player {
                     canDraw = false;
                 }
                 else if (cmd.equals("take") && s.length > 2) {
+                    if(!initialMeld){
+                        throw new BadInputException("You have to make the initial meld before you can manipulate the tiles on the table!");
+                    }
                     if (s[1].matches("\\d+")) {
                         String[] ids = new String[s.length - 2];
                         for (int i = 2; i < s.length; i++) {
@@ -221,6 +245,9 @@ public class Player {
                     canDraw = false;
                 }
                 else if (cmd.equals("split") && s.length == 3) {
+                    if(!initialMeld){
+                        throw new BadInputException("You have to make the initial meld before you can manipulate the tiles on the table!");
+                    }
                     if (s[1].matches("\\d+")) {
                         if(isValid(s[2])){
                             game.table.splitSequence(Integer.parseInt(s[1]), s[2]);
@@ -248,6 +275,9 @@ public class Player {
                     canDraw = false;
                 }
                 else if (cmd.equals("join") && s.length == 3) {
+                    if(!initialMeld){
+                        throw new BadInputException("You have to make the initial meld before you can manipulate the tiles on the table!");
+                    }
                     if (s[1].matches("\\d+") && s[2].matches("\\d+")) {
                         game.table.joinSequences(Integer.parseInt(s[1]), Integer.parseInt(s[2]));
                     }
@@ -271,6 +301,9 @@ public class Player {
                 System.out.println(e.getMessage());
                 System.out.println();
             }
+        }
+        if (!initialMeld && points >= 30) {
+            initialMeld = true;
         }
     }
     public String toString(){
