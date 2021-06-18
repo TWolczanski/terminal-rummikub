@@ -8,9 +8,12 @@ import java.util.ArrayList;
 public class GameTest {
     @org.junit.Test
     public static void main(String[] args){
-        System.out.println("\u001b[s");
-        System.out.println("\u001b[5000;5000H");
-        System.out.println("\u001b[6n");
-        System.out.println("\u001b[u");
+        Game game = new Game("Tomek", 1);
+        for(int i = 0; i < 60; i++){
+            game.players[1].rack.addTile(game.pile.draw());
+        }
+        System.out.println(game.players[1].rack);
+        System.out.println();
+        game.players[1].myTurn(game);
     }
 }

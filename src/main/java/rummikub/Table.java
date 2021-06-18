@@ -6,7 +6,7 @@ public class Table {
     ArrayList<ArrayList<Tile>> sequences = new ArrayList<ArrayList<Tile>>();
     ArrayList<Tile> missingTiles = new ArrayList<Tile>();
     
-    private boolean isRun(ArrayList<Tile> sequence){
+    public boolean isRun(ArrayList<Tile> sequence){
         if(sequence.size() == 1){
             return true;
         }
@@ -17,7 +17,7 @@ public class Table {
         }
         return true;
     }
-    private boolean isGroup(ArrayList<Tile> sequence){
+    public boolean isGroup(ArrayList<Tile> sequence){
         for(Tile t1 : sequence){
             for(Tile t2 : sequence){
                 if(t1 != t2 && (t1.sameColorAs(t2) || t1.number != t2.number)){
