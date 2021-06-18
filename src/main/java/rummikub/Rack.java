@@ -120,36 +120,46 @@ public class Rack {
             for(Tile t : group){
                 s += " __ ";
             }
-            s += "  ";
-        }
-        for(Tile t : tiles){
-            if(!isGrouped(t)){
-                s += " __  ";
-            }
-        }
-        s += "\n";
-        for(ArrayList<Tile> group : groups){
+            s += "\n";
             for(Tile t : group){
                 s = s + "|" + t.toString() + "|";
             }
-            s += "  ";
-        }
-        for(Tile t : tiles){
-            if(!isGrouped(t)){
-                s = s + "|" + t.toString() + "| ";
-            }
-        }
-        s += "\n";
-        for(ArrayList<Tile> group : groups){
+            s += "\n";
             for(Tile t : group){
                 s += "|__|";
             }
-            s += "  ";
+            s += "\n";
         }
+        ArrayList<ArrayList<Tile>> rows = new ArrayList<ArrayList<Tile>>();
+        ArrayList<Tile> row = new ArrayList<Tile>();
+        int i = 0;
         for(Tile t : tiles){
             if(!isGrouped(t)){
+                i++;
+                row.add(t);
+                if (i == 14) {
+                    rows.add(row);
+                    row = new ArrayList<Tile>();
+                    i = 0;
+                }
+            }
+        }
+        if(!row.isEmpty()){
+            rows.add(row);
+        }
+        for(ArrayList<Tile> r : rows){
+            for(Tile t : r){
+                s += " __  ";
+            }
+            s += "\n";
+            for(Tile t : r){
+                s = s + "|" + t.toString() + "| ";
+            }
+            s += "\n";
+            for(Tile t : r){
                 s += "|__| ";
             }
+            s += "\n";
         }
         return s;
     }

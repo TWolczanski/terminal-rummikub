@@ -45,7 +45,7 @@ public class Game {
         }
         System.out.println();
         System.out.println();
-        for(int i = 0; i < 15; i++){
+        for(int i = 0; i < 14; i++){
             players[0].rack.addTile(pile.draw());
         }
         Random r = new Random();

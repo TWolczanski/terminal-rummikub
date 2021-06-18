@@ -79,7 +79,6 @@ public class Player {
                 else if (cmd.equals("rack") && s.length == 1) {
                     System.out.println();
                     System.out.println(rack);
-                    System.out.println();
                 }
                 else if (cmd.equals("table") && s.length == 1) {
                     System.out.println(game.table);
@@ -101,7 +100,6 @@ public class Player {
                         System.out.println();
                         System.out.println("Your rack:");
                         System.out.println(rack);
-                        System.out.println();
                     }
                 }
                 else if (cmd.equals("group") && s.length > 1) {
@@ -123,7 +121,6 @@ public class Player {
                     System.out.println();
                     System.out.println("Your rack:");
                     System.out.println(rack);
-                    System.out.println();
                 }
                 else if (cmd.equals("ungroup") && s.length > 1) {
                     ArrayList<Tile> tiles = new ArrayList<Tile>();
@@ -144,7 +141,6 @@ public class Player {
                     System.out.println();
                     System.out.println("Your rack:");
                     System.out.println(rack);
-                    System.out.println();
                 }
                 else if (cmd.equals("put") && s.length > 1) {
                     ArrayList<Tile> tiles = new ArrayList<Tile>();
@@ -173,7 +169,6 @@ public class Player {
                     System.out.println(game.table);
                     System.out.println("Your rack:");
                     System.out.println(rack);
-                    System.out.println();
                     canDraw = false;
                 }
                 else if (cmd.equals("add") && s.length > 2) {
@@ -207,7 +202,6 @@ public class Player {
                     System.out.println(game.table);
                     System.out.println("Your rack:");
                     System.out.println(rack);
-                    System.out.println();
                     canDraw = false;
                 }
                 else if (cmd.equals("take") && s.length > 2) {
@@ -241,7 +235,6 @@ public class Player {
                     System.out.println(game.table);
                     System.out.println("Your rack:");
                     System.out.println(rack);
-                    System.out.println();
                     canDraw = false;
                 }
                 else if (cmd.equals("split") && s.length == 3) {
@@ -270,7 +263,6 @@ public class Player {
                     System.out.println("Table:");
                     System.out.println(game.table);
                     System.out.println("Your rack:");
-                    System.out.println(rack);
                     System.out.println();
                     canDraw = false;
                 }
@@ -289,7 +281,6 @@ public class Player {
                     System.out.println(game.table);
                     System.out.println("Your rack:");
                     System.out.println(rack);
-                    System.out.println();
                     canDraw = false;
                 }
                 else {

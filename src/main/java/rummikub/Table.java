@@ -259,26 +259,6 @@ public class Table {
         sequences.remove(sequence1);
         sequences.remove(sequence2);
         sequences.add(sequence3);
-        /*
-        Table backup = tableBackup();
-        try {
-            addTiles(sequenceNumber1, sequence2);
-            ArrayList<Tile> sequence3 = new ArrayList<Tile>();
-            for(Tile t : sequence1){{
-            }
-                sequence3.add(t);
-            }
-            sequences.remove(sequence1);
-            sequences.remove(sequence2);
-            sequences.add(sequence3);
-            missingTiles = backup.missingTiles;
-        }
-        catch (BadArgumentException e){
-            sequences = backup.sequences;
-            missingTiles = backup.missingTiles;
-            throw new BadArgumentException("You can't join these two sequences!");
-        }
-        */
     }
     public Table tableBackup(){
         Table backup = new Table();
