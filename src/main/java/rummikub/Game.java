@@ -101,7 +101,7 @@ public class Game {
             System.out.println("Your turn");
             System.out.println("=========");
             System.out.println();
-            players[0].myTurn(this);
+            players[0].takeTurn(this);
         }
     }
 }

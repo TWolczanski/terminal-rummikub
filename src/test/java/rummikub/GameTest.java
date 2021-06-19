@@ -9,11 +9,11 @@ public class GameTest {
     @org.junit.Test
     public static void main(String[] args){
         Game game = new Game("Tomek", 1);
-        for(int i = 0; i < 60; i++){
+        for(int i = 0; i < 14; i++){
             game.players[1].rack.addTile(game.pile.draw());
         }
         System.out.println(game.players[1].rack);
         System.out.println();
-        game.players[1].myTurn(game);
+        game.players[1].takeTurn(game);
     }
 }
