@@ -60,18 +60,16 @@ public class Player {
                             System.out.println("You did something wrong this turn! Probably there are some missing tiles or some sequences on the table are not valid. The table and your rack will be now reset to the state from the beginning of your turn. You will also draw one tile as a penalty.");
                             game.table = tableBackup;
                             rack = rackBackup;
-                            if(!game.pile.isEmpty()){
-                                Tile t = game.pile.draw();
-                                rack.addTile(t);
-                                System.out.println();
-                                System.out.println("You drew:");
-                                System.out.println(" __ ");
-                                System.out.println("|" + t + "|");
-                                System.out.println("|__|");
-                                System.out.println();
-                                System.out.println("Your rack:");
-                                System.out.println(rack);
-                            }
+                            Tile t = game.pile.draw();
+                            rack.addTile(t);
+                            System.out.println();
+                            System.out.println("You drew:");
+                            System.out.println(" __ ");
+                            System.out.println("|" + t + "|");
+                            System.out.println("|__|");
+                            System.out.println();
+                            System.out.println("Your rack:");
+                            System.out.println(rack);
                         }
                         System.out.println();
                     }
@@ -84,9 +82,7 @@ public class Player {
                     System.out.println(game.table);
                 }
                 else if (cmd.equals("draw") && s.length == 1) {
-                    if (game.pile.isEmpty()) {
-                        throw new BadInputException("There are no more tiles on the pile!");
-                    } else if (!canDraw) {
+                    if (!canDraw) {
                         throw new BadInputException("You can't draw - you've made some plays this turn!");
                     } else {
                         Tile t = game.pile.draw();

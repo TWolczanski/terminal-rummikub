@@ -45,9 +45,7 @@ public class Game {
         }
         System.out.println();
         System.out.println();
-        for(int i = 0; i < 14; i++){
-            players[0].rack.addTile(pile.draw());
-        }
+        /*
         Random r = new Random();
         ArrayList<String> colors = new ArrayList<String>();
         colors.add("red");
@@ -93,15 +91,29 @@ public class Game {
                 System.out.println(e.getMessage());
             }
         }
-        System.out.println(table);
-        System.out.println(players[0].rack);
-        System.out.println();
-        while(!pile.isEmpty() && !players[0].rack.isEmpty()){
-            System.out.println("=========");
-            System.out.println("Your turn");
-            System.out.println("=========");
-            System.out.println();
-            players[0].takeTurn(this);
+        */
+        
+        for(Player player : players){
+            for(int i = 0; i < 14; i++){
+                player.rack.addTile(pile.draw());
+            }
+        }
+        
+        while(true){
+            boolean end = false;
+            for(Player player : players){
+                String msg = player.name + "'s turn";
+                String line = "";
+                for(int i = 0; i < msg.length(); i++){
+                    line += "=";
+                }
+                System.out.println();
+                player.takeTurn(this);
+                if(player.rack.isEmpty() || pile.isEmpty()){
+                    end = true;
+                    break;
+                }
+            }
         }
     }
 }

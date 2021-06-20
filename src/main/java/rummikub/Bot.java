@@ -1,6 +1,7 @@
 package rummikub;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Bot extends Player {
     public Bot(String name){
@@ -26,7 +27,7 @@ public class Bot extends Player {
                     if(run.size() >= 3){
                         runs.add(run);
                     }
-                    i = 0;
+                    i = -1;
                 }
             }
         }
@@ -100,6 +101,11 @@ public class Bot extends Player {
             if (len1 > len2) {
                 return play1;
             }
+            else if (len1 == len2){
+                if(val1 > val2){
+                    return play1;
+                }
+            }
             return play2;
         } else {
             if (val1 > val2) {
@@ -120,90 +126,288 @@ public class Bot extends Player {
         return false;
     }
     
-    private ArrayList<ArrayList<Tile>> findBestPlay(ArrayList<ArrayList<Tile>> bestPlay, ArrayList<ArrayList<Tile>> currentPlay, ArrayList<ArrayList<Tile>> possibleMelds){
-        if(possibleMelds.isEmpty()){
-            return betterPlay(currentPlay, bestPlay);
+    private ArrayList<ArrayList<Tile>> findRackPlay(){
+        
+        ArrayList<ArrayList<Tile>> possibleRuns = findRuns();
+        ArrayList<ArrayList<Tile>> possibleGroups = findGroups();
+        ArrayList<ArrayList<Tile>> possibleMelds = new ArrayList<ArrayList<Tile>>();
+        for(ArrayList<Tile> run : possibleRuns){
+            possibleMelds.add(run);
         }
-        ArrayList<ArrayList<Tile>> disjoint = new ArrayList<ArrayList<Tile>>();
-        for(ArrayList<Tile> meld1 : possibleMelds){
-            boolean overlapping = false;
-            for(ArrayList<Tile> meld2 : currentPlay){
-                if(overlap(meld1, meld2)){
-                    overlapping = true;
-                    break;
-                }
-            }
-            if(!overlapping){
-                disjoint.add(meld1);
-            }
+        for(ArrayList<Tile> group : possibleGroups){
+            possibleMelds.add(group);
         }
-        possibleMelds = disjoint;
+        
+        ArrayList<ArrayList<Tile>> bestPlay = new ArrayList<ArrayList<Tile>>();
+        
         for(ArrayList<Tile> meld : possibleMelds){
-            ArrayList<ArrayList<Tile>> without = new ArrayList<ArrayList<Tile>>();
-            for(ArrayList<Tile> m : possibleMelds){
-                if(m != meld){
-                    ArrayList<Tile> cp = new ArrayList<Tile>();
-                    for(Tile t : m){
-                        cp.add(t);
-                    }
-                    without.add(cp);
-                }
-            }
-            currentPlay.add(meld);
-            ArrayList<ArrayList<Tile>> play1 = findBestPlay(bestPlay, currentPlay, without);
-            currentPlay.remove(meld);
-            ArrayList<ArrayList<Tile>> play2 = findBestPlay(bestPlay, currentPlay, without);
-            bestPlay = betterPlay(play1, play2);
-        }
-        return bestPlay;
-        /*
-        for(int i = 0; i < possibleMelds.size(); i++){
-            ArrayList<Tile> sequence = possibleMelds.get(i);
-            currentMeld.add(sequence);
-            ArrayList<ArrayList<Tile>> with = new ArrayList<ArrayList<Tile>>();
-            ArrayList<ArrayList<Tile>> without = new ArrayList<ArrayList<Tile>>();
-            for(int j = 0; j < possibleMelds.size(); j++){
-                ArrayList<Tile> seq = possibleMelds.get(j);
-                if(i != j){
-                    without.add(seq);
-                }
+            ArrayList<ArrayList<Tile>> play = new ArrayList<ArrayList<Tile>>();
+            play.add(meld);
+            for(ArrayList<Tile> meld1 : possibleMelds){
                 boolean overlapping = false;
-                for(ArrayList<Tile> s : currentMeld){
-                    if(overlap(s, seq)){
+                for(ArrayList<Tile> meld2 : play){
+                    if(overlap(meld1, meld2)){
                         overlapping = true;
-                        break;
                     }
                 }
                 if(!overlapping){
-                    with.add(seq);
+                    play.add(meld1);
                 }
             }
-            ArrayList<ArrayList<Tile>> meldWith = findBestMeld(bestMeld, currentMeld, with);
-            currentMeld.remove(sequence);
-            ArrayList<ArrayList<Tile>> meldWithout = findBestMeld(bestMeld, currentMeld, without);
-            bestMeld = betterMeld(meldWith, meldWithout);
+            bestPlay = betterPlay(play, bestPlay);
         }
-        return bestMeld;
-        */
+        return bestPlay;
+    }
+    
+    private void makeRackPlay(Game game, ArrayList<ArrayList<Tile>> rackPlay){
+        Scanner scanner = new Scanner(System.in);
+        for(ArrayList<Tile> meld : rackPlay){
+            try {
+                game.table.putTiles(meld);
+                String ids = "";
+                for(Tile tile : meld){
+                    rack.removeTile(tile);
+                    ids = ids + tile.id + " ";
+                }
+                String msg = name + " puts the sequence " + ids + "onto the table.";
+                String line = "";
+                for(int i = 0; i < msg.length(); i++){
+                    line += "-";
+                }
+                System.out.println();
+                System.out.println(line);
+                System.out.println(msg);
+                System.out.println(line);
+                System.out.println("Table:");
+                System.out.println(game.table);
+                System.out.println(name + "'s rack:");
+                System.out.println(rack);
+                System.out.println("Press Enter to see " + name + "'s next play.");
+                String read = scanner.nextLine();
+                while(!read.isEmpty()){
+                    read = scanner.nextLine();
+                }
+            }
+            catch (BadArgumentException e){
+                System.out.println("Something impossible happened!");
+            }
+        }
+    }
+    
+    private void makeTakePlay(Game game, int sequenceNumber, Tile tile){
+        Scanner scanner = new Scanner(System.in);
+        try {
+            game.table.takeTile(sequenceNumber, tile.id);
+            String msg = name + " takes the tile " + tile.id + " from the sequence " + sequenceNumber + ".";
+            String line = "";
+            for(int i = 0; i < msg.length(); i++){
+                line += "-";
+            }
+            System.out.println();
+            System.out.println(line);
+            System.out.println(msg);
+            System.out.println(line);
+            System.out.println();
+            System.out.println("Table:");
+            System.out.println(game.table);
+            System.out.println(name + "'s rack:");
+            System.out.println(rack);
+            System.out.println("Press Enter to see " + name + "'s next play.");
+            String read = scanner.nextLine();
+            while(!read.isEmpty()){
+                read = scanner.nextLine();
+            }
+        }
+        catch (BadArgumentException e){
+            System.out.println("Something impossible happened!");
+        }
+    }
+    
+    private void makeAddPlay(Game game, int sequenceNumber, Tile tile){
+        Scanner scanner = new Scanner(System.in);
+        try {
+            game.table.addTile(sequenceNumber, tile);
+            rack.removeTile(tile);
+            String msg = name + " adds the tile " + tile.id + " to the sequence " + sequenceNumber + ".";
+            String line = "";
+            for(int i = 0; i < msg.length(); i++){
+                line += "-";
+            }
+            System.out.println();
+            System.out.println(line);
+            System.out.println(msg);
+            System.out.println(line);
+            System.out.println();
+            System.out.println("Table:");
+            System.out.println(game.table);
+            System.out.println(name + "'s rack:");
+            System.out.println(rack);
+            System.out.println("Press Enter to see " + name + "'s next play.");
+            String read = scanner.nextLine();
+            while(!read.isEmpty()){
+                read = scanner.nextLine();
+            }
+        }
+        catch (BadArgumentException e){
+            System.out.println("Something impossible happened!");
+        }
     }
     
     @Override
     public void takeTurn(Game game){
-        ArrayList<ArrayList<Tile>> runs = findRuns();
-        ArrayList<ArrayList<Tile>> groups = findGroups();
-        ArrayList<ArrayList<Tile>> sequences = new ArrayList<ArrayList<Tile>>();
-        for(ArrayList<Tile> run : runs){
-            sequences.add(run);
-        }
-        for(ArrayList<Tile> group : groups){
-            sequences.add(group);
-        }
-        ArrayList<ArrayList<Tile>> bestPlay = findBestPlay(new ArrayList<ArrayList<Tile>>(), new ArrayList<ArrayList<Tile>>(), sequences);
-        for(ArrayList<Tile> meld : bestPlay){
-            for(Tile tile : meld){
-                System.out.print(tile + " ");
+        
+        ArrayList<ArrayList<Tile>> rackPlay = findRackPlay();
+        
+        if(initialPlay){
+            boolean canDraw = true;
+            makeRackPlay(game, rackPlay);
+            if(!rackPlay.isEmpty()){
+                canDraw = false;
             }
-            System.out.println();
+            
+            for(int i = 0; i < game.table.sequences.size(); i++){
+                ArrayList<Tile> sequence = game.table.sequences.get(i);
+                if(sequence.size() == 3){
+                    continue;
+                }
+                boolean taken = false;
+                
+                if(game.table.isRun(sequence)){
+                    Tile first = sequence.get(0);
+                    rack.addTile(first);
+                    rackPlay = findRackPlay();
+                    boolean found = false;
+                    for(ArrayList<Tile> meld : rackPlay){
+                        for(Tile tile : meld){
+                            if(tile == first){
+                                found = true;
+                            }
+                        }
+                    }
+                    if(found){
+                        makeTakePlay(game, i + 1, first);
+                        makeRackPlay(game, rackPlay);
+                        taken = true;
+                    }
+                    rack.removeTile(first);
+                    Tile last = sequence.get(sequence.size() - 1);
+                    rack.addTile(last);
+                    rackPlay = findRackPlay();
+                    found = false;
+                    for(ArrayList<Tile> meld : rackPlay){
+                        for(Tile tile : meld){
+                            if(tile == last){
+                                found = true;
+                            }
+                        }
+                    }
+                    if(found){
+                        makeTakePlay(game, i + 1, last);
+                        makeRackPlay(game, rackPlay);
+                        taken = true;
+                    }
+                    rack.removeTile(last);
+                    if(taken){
+                        canDraw = false;
+                        i--;
+                    }
+                }
+                else if(game.table.isGroup(sequence)){
+                    for(Tile t : sequence){
+                        rack.addTile(t);
+                        rackPlay = findRackPlay();
+                        boolean found = false;
+                        for(ArrayList<Tile> meld : rackPlay){
+                            for(Tile tile : meld){
+                                if(tile == t){
+                                    found = true;
+                                }
+                            }
+                        }
+                        if(found){
+                            makeTakePlay(game, i + 1, t);
+                            makeRackPlay(game, rackPlay);
+                            taken = true;
+                        }
+                        rack.removeTile(t);
+                    }
+                }
+            }
+            
+            for(int i = 0; i < game.table.sequences.size(); i++){
+                ArrayList<Tile> sequence = game.table.sequences.get(i);
+                boolean added = false;
+                
+                if(game.table.isRun(sequence)){
+                    Tile t = sequence.get(0);
+                    if(t.number > 1){
+                        Tile before = new Tile(t.color, t.number - 1);
+                        try {
+                            before = rack.getTile(before.id, 1);
+                            makeAddPlay(game, i + 1, before);
+                            added = true;
+                        }
+                        catch (BadArgumentException e){};
+                    }
+                    t = sequence.get(sequence.size() - 1);
+                    if(t.number < 13){
+                        Tile after = new Tile(t.color, t.number + 1);
+                        try {
+                            after = rack.getTile(after.id, 1);
+                            makeAddPlay(game, i + 1, after);
+                            added = true;
+                        }
+                        catch (BadArgumentException e){};
+                    }
+                }
+                else if(game.table.isGroup(sequence) && sequence.size() == 3){
+                    ArrayList<String> colors = new ArrayList<String>();
+                    colors.add("red");
+                    colors.add("blue");
+                    colors.add("yellow");
+                    colors.add("green");
+                    for(Tile t : sequence){
+                        colors.remove(t.color);
+                    }
+                    String color = colors.get(0);
+                    int number = sequence.get(0).number;
+                    Tile t = new Tile(color, number);
+                    try {
+                        t = rack.getTile(t.id, 1);
+                        makeAddPlay(game, i + 1, t);
+                        added = true;
+                    }
+                    catch (BadArgumentException e){};
+                }
+                if(added){
+                    canDraw = false;
+                    i--;
+                }
+            }
+            if(canDraw){
+                Tile t = game.pile.draw();
+                rack.addTile(t);
+                System.out.println(name + " draws a tile from the pile.");
+            }
+            System.out.println(name + " ends their turn.");
+        }
+        
+        else {
+            int points = 0;
+            for(ArrayList<Tile> meld : rackPlay){
+                for(Tile tile : meld){
+                    points += tile.number;
+                }
+            }
+            if(points >= 30){
+                makeRackPlay(game, rackPlay);
+                initialPlay = true;
+            }
+            else {
+                Tile t = game.pile.draw();
+                rack.addTile(t);
+                System.out.println(name + " draws a tile from the pile.");
+            }
         }
     }
 }
