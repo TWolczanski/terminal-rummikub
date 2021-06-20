@@ -174,10 +174,10 @@ public class Bot extends Player {
                 for(int i = 0; i < msg.length(); i++){
                     line += "-";
                 }
-                System.out.println();
                 System.out.println(line);
                 System.out.println(msg);
                 System.out.println(line);
+                System.out.println();
                 System.out.println("Table:");
                 System.out.println(game.table);
                 System.out.println(name + "'s rack:");
@@ -194,16 +194,16 @@ public class Bot extends Player {
         }
     }
     
-    private void makeTakePlay(Game game, int sequenceNumber, Tile tile){
+    private void makeAddPlay(Game game, int sequenceNumber, Tile tile){
         Scanner scanner = new Scanner(System.in);
         try {
-            game.table.takeTile(sequenceNumber, tile.id);
-            String msg = name + " takes the tile " + tile.id + " from the sequence " + sequenceNumber + ".";
+            game.table.addTile(sequenceNumber, tile);
+            rack.removeTile(tile);
+            String msg = name + " adds the tile " + tile.id + " to sequence " + sequenceNumber + ".";
             String line = "";
             for(int i = 0; i < msg.length(); i++){
                 line += "-";
             }
-            System.out.println();
             System.out.println(line);
             System.out.println(msg);
             System.out.println(line);
@@ -223,17 +223,15 @@ public class Bot extends Player {
         }
     }
     
-    private void makeAddPlay(Game game, int sequenceNumber, Tile tile){
+    private void makeTakePlay(Game game, int sequenceNumber, Tile tile){
         Scanner scanner = new Scanner(System.in);
         try {
-            game.table.addTile(sequenceNumber, tile);
-            rack.removeTile(tile);
-            String msg = name + " adds the tile " + tile.id + " to the sequence " + sequenceNumber + ".";
+            game.table.takeTile(sequenceNumber, tile.id);
+            String msg = name + " takes the tile " + tile.id + " from sequence " + sequenceNumber + ".";
             String line = "";
             for(int i = 0; i < msg.length(); i++){
                 line += "-";
             }
-            System.out.println();
             System.out.println(line);
             System.out.println(msg);
             System.out.println(line);
@@ -263,75 +261,6 @@ public class Bot extends Player {
             makeRackPlay(game, rackPlay);
             if(!rackPlay.isEmpty()){
                 canDraw = false;
-            }
-            
-            for(int i = 0; i < game.table.sequences.size(); i++){
-                ArrayList<Tile> sequence = game.table.sequences.get(i);
-                if(sequence.size() == 3){
-                    continue;
-                }
-                boolean taken = false;
-                
-                if(game.table.isRun(sequence)){
-                    Tile first = sequence.get(0);
-                    rack.addTile(first);
-                    rackPlay = findRackPlay();
-                    boolean found = false;
-                    for(ArrayList<Tile> meld : rackPlay){
-                        for(Tile tile : meld){
-                            if(tile == first){
-                                found = true;
-                            }
-                        }
-                    }
-                    if(found){
-                        makeTakePlay(game, i + 1, first);
-                        makeRackPlay(game, rackPlay);
-                        taken = true;
-                    }
-                    rack.removeTile(first);
-                    Tile last = sequence.get(sequence.size() - 1);
-                    rack.addTile(last);
-                    rackPlay = findRackPlay();
-                    found = false;
-                    for(ArrayList<Tile> meld : rackPlay){
-                        for(Tile tile : meld){
-                            if(tile == last){
-                                found = true;
-                            }
-                        }
-                    }
-                    if(found){
-                        makeTakePlay(game, i + 1, last);
-                        makeRackPlay(game, rackPlay);
-                        taken = true;
-                    }
-                    rack.removeTile(last);
-                    if(taken){
-                        canDraw = false;
-                        i--;
-                    }
-                }
-                else if(game.table.isGroup(sequence)){
-                    for(Tile t : sequence){
-                        rack.addTile(t);
-                        rackPlay = findRackPlay();
-                        boolean found = false;
-                        for(ArrayList<Tile> meld : rackPlay){
-                            for(Tile tile : meld){
-                                if(tile == t){
-                                    found = true;
-                                }
-                            }
-                        }
-                        if(found){
-                            makeTakePlay(game, i + 1, t);
-                            makeRackPlay(game, rackPlay);
-                            taken = true;
-                        }
-                        rack.removeTile(t);
-                    }
-                }
             }
             
             for(int i = 0; i < game.table.sequences.size(); i++){
@@ -384,14 +313,85 @@ public class Bot extends Player {
                     i--;
                 }
             }
+            
+            for(int i = 0; i < game.table.sequences.size(); i++){
+                ArrayList<Tile> sequence = game.table.sequences.get(i);
+                if(sequence.size() == 3){
+                    continue;
+                }
+                boolean taken = false;
+                
+                if(game.table.isRun(sequence)){
+                    Tile first = sequence.get(0);
+                    rack.addTile(first);
+                    rackPlay = findRackPlay();
+                    boolean found = false;
+                    for(ArrayList<Tile> meld : rackPlay){
+                        for(Tile tile : meld){
+                            if(tile == first){
+                                found = true;
+                            }
+                        }
+                    }
+                    if(found){
+                        makeTakePlay(game, i + 1, first);
+                        makeRackPlay(game, rackPlay);
+                        taken = true;
+                    }
+                    else {
+                        rack.removeTile(first);
+                        Tile last = sequence.get(sequence.size() - 1);
+                        rack.addTile(last);
+                        rackPlay = findRackPlay();
+                        found = false;
+                        for(ArrayList<Tile> meld : rackPlay){
+                            for(Tile tile : meld){
+                                if(tile == last){
+                                    found = true;
+                                }
+                            }
+                        }
+                        if(found){
+                            makeTakePlay(game, i + 1, last);
+                            makeRackPlay(game, rackPlay);
+                            taken = true;
+                        }
+                        rack.removeTile(last);
+                    }
+                }
+                else if(game.table.isGroup(sequence)){
+                    for(Tile t : sequence){
+                        rack.addTile(t);
+                        rackPlay = findRackPlay();
+                        boolean found = false;
+                        for(ArrayList<Tile> meld : rackPlay){
+                            for(Tile tile : meld){
+                                if(tile == t){
+                                    found = true;
+                                }
+                            }
+                        }
+                        if(found){
+                            makeTakePlay(game, i + 1, t);
+                            makeRackPlay(game, rackPlay);
+                            taken = true;
+                            break;
+                        }
+                        rack.removeTile(t);
+                    }
+                }
+                if(taken){
+                    canDraw = false;
+                    i--;
+                }
+            }
+            
             if(canDraw){
                 Tile t = game.pile.draw();
                 rack.addTile(t);
                 System.out.println(name + " draws a tile from the pile.");
             }
-            System.out.println(name + " ends their turn.");
         }
-        
         else {
             int points = 0;
             for(ArrayList<Tile> meld : rackPlay){
@@ -407,7 +407,10 @@ public class Bot extends Player {
                 Tile t = game.pile.draw();
                 rack.addTile(t);
                 System.out.println(name + " draws a tile from the pile.");
+                System.out.println();
             }
         }
+        
+        System.out.println(name + " ends their turn.");
     }
 }

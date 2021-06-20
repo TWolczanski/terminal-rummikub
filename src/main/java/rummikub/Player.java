@@ -11,6 +11,7 @@ public class Player {
     public Player(String name){
         this.name = name;
     }
+    
     private boolean isValid(String id){
         if(id.length() != 2 && id.length() != 3){
             return false;
@@ -63,13 +64,24 @@ public class Player {
                             Tile t = game.pile.draw();
                             rack.addTile(t);
                             System.out.println();
-                            System.out.println("You drew:");
-                            System.out.println(" __ ");
-                            System.out.println("|" + t + "|");
-                            System.out.println("|__|");
-                            System.out.println();
-                            System.out.println("Your rack:");
-                            System.out.println(rack);
+                            if(Main.tileLook == 1){
+                                System.out.println("You drew:");
+                                System.out.println(" __ ");
+                                System.out.println("|" + t + "|");
+                                System.out.println("|__|");
+                                System.out.println();
+                                System.out.println("Your rack:");
+                                System.out.println(rack);
+                            }
+                            else {
+                                System.out.println("You drew:");
+                                System.out.println();
+                                System.out.println("[" + t + "]");
+                                System.out.println();
+                                System.out.println("Your rack:");
+                                System.out.println();
+                                System.out.println(rack);
+                            }
                         }
                         System.out.println();
                     }
@@ -89,13 +101,24 @@ public class Player {
                         rack.addTile(t);
                         end = true;
                         System.out.println();
-                        System.out.println("You drew:");
-                        System.out.println(" __ ");
-                        System.out.println("|" + t + "|");
-                        System.out.println("|__|");
-                        System.out.println();
-                        System.out.println("Your rack:");
-                        System.out.println(rack);
+                        if(Main.tileLook == 1){
+                            System.out.println("You drew:");
+                            System.out.println(" __ ");
+                            System.out.println("|" + t + "|");
+                            System.out.println("|__|");
+                            System.out.println();
+                            System.out.println("Your rack:");
+                            System.out.println(rack);
+                        }
+                        else {
+                            System.out.println("You drew:");
+                            System.out.println();
+                            System.out.println("[" + t + "]");
+                            System.out.println();
+                            System.out.println("Your rack:");
+                            System.out.println();
+                            System.out.println(rack);
+                        }
                     }
                 }
                 else if (cmd.equals("group") && s.length > 1) {
@@ -116,7 +139,14 @@ public class Player {
                     rack.groupTiles(tiles);
                     System.out.println();
                     System.out.println("Your rack:");
-                    System.out.println(rack);
+                    if(Main.tileLook == 2){
+                        System.out.println();
+                        System.out.println(rack);
+                        System.out.println();
+                    }
+                    else {
+                        System.out.println(rack);
+                    }
                 }
                 else if (cmd.equals("ungroup") && s.length > 1) {
                     ArrayList<Tile> tiles = new ArrayList<Tile>();
@@ -136,7 +166,14 @@ public class Player {
                     rack.ungroupTiles(tiles);
                     System.out.println();
                     System.out.println("Your rack:");
-                    System.out.println(rack);
+                    if(Main.tileLook == 2){
+                        System.out.println();
+                        System.out.println(rack);
+                        System.out.println();
+                    }
+                    else {
+                        System.out.println(rack);
+                    }
                 }
                 else if (cmd.equals("put") && s.length > 1) {
                     ArrayList<Tile> tiles = new ArrayList<Tile>();
@@ -164,7 +201,14 @@ public class Player {
                     System.out.println("Table:");
                     System.out.println(game.table);
                     System.out.println("Your rack:");
-                    System.out.println(rack);
+                    if(Main.tileLook == 2){
+                        System.out.println();
+                        System.out.println(rack);
+                        System.out.println();
+                    }
+                    else {
+                        System.out.println(rack);
+                    }
                     canDraw = false;
                 }
                 else if (cmd.equals("add") && s.length > 2) {
@@ -197,7 +241,14 @@ public class Player {
                     System.out.println("Table:");
                     System.out.println(game.table);
                     System.out.println("Your rack:");
-                    System.out.println(rack);
+                    if(Main.tileLook == 2){
+                        System.out.println();
+                        System.out.println(rack);
+                        System.out.println();
+                    }
+                    else {
+                        System.out.println(rack);
+                    }
                     canDraw = false;
                 }
                 else if (cmd.equals("take") && s.length > 2) {
@@ -230,7 +281,14 @@ public class Player {
                     System.out.println("Table:");
                     System.out.println(game.table);
                     System.out.println("Your rack:");
-                    System.out.println(rack);
+                    if(Main.tileLook == 2){
+                        System.out.println();
+                        System.out.println(rack);
+                        System.out.println();
+                    }
+                    else {
+                        System.out.println(rack);
+                    }
                     canDraw = false;
                 }
                 else if (cmd.equals("split") && s.length == 3) {
@@ -259,7 +317,14 @@ public class Player {
                     System.out.println("Table:");
                     System.out.println(game.table);
                     System.out.println("Your rack:");
-                    System.out.println();
+                    if(Main.tileLook == 2){
+                        System.out.println();
+                        System.out.println(rack);
+                        System.out.println();
+                    }
+                    else {
+                        System.out.println(rack);
+                    }
                     canDraw = false;
                 }
                 else if (cmd.equals("join") && s.length == 3) {
@@ -276,6 +341,9 @@ public class Player {
                     System.out.println("Table:");
                     System.out.println(game.table);
                     System.out.println("Your rack:");
+                    if(Main.tileLook == 2){
+                        System.out.println();
+                    }
                     System.out.println(rack);
                     canDraw = false;
                 }
@@ -293,6 +361,7 @@ public class Player {
             initialPlay = true;
         }
     }
+    
     public String toString(){
         return name;
     }

@@ -6,6 +6,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
+    public static int tileLook;
     public static void main(String[] args) throws FileNotFoundException {
         File file = new File("ascii-art.txt");
         Scanner scanner = new Scanner(file);
@@ -19,6 +20,29 @@ public class Main {
         System.out.println();
         System.out.println("Welcome to the terminal version of the Rummikub game!");
         System.out.println();
+        System.out.println("1:          2: ");
+        System.out.println("    __");
+        System.out.println("   |\033[0;91m12\u001B[0m|       [\033[0;91m12\u001B[0m]");
+        System.out.println("   |__|");
+        System.out.println();
+        while(true){
+            try {
+                System.out.print("Choose your preferred look of tiles: ");
+                tileLook = scanner.nextInt();
+                scanner.nextLine();
+                if(tileLook == 1 || tileLook == 2){
+                    break;
+                }
+                else {
+                    System.out.println("Wrong input. Try again.");
+                }
+            }
+            catch(InputMismatchException e){
+                System.out.println("Wrong input. Try again.");
+                scanner.nextLine();
+                continue;
+            }
+        }
         System.out.print("Enter your name: ");
         String playerName = scanner.nextLine();
         int numberOfBots = 0;

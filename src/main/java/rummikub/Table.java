@@ -17,6 +17,7 @@ public class Table {
         }
         return true;
     }
+    
     public boolean isGroup(ArrayList<Tile> sequence){
         for(Tile t1 : sequence){
             for(Tile t2 : sequence){
@@ -27,12 +28,14 @@ public class Table {
         }
         return true;
     }
+    
     private boolean isSequenceValid(ArrayList<Tile> sequence){
         if(sequence.size() < 3){
             return false;
         }
         return isRun(sequence) || isGroup(sequence);
     }
+    
     public void putTiles(ArrayList<Tile> tiles) throws BadArgumentException {
         if(isSequenceValid(tiles)){
             ArrayList<Tile> cp = new ArrayList<Tile>();
@@ -52,6 +55,7 @@ public class Table {
             throw new BadArgumentException("The tiles don't make a valid sequence!");
         }
     }
+    
     public void addTile(int sequenceNumber, Tile tile) throws BadArgumentException {
         if(sequenceNumber < 1 || sequenceNumber > sequences.size()){
             throw new BadArgumentException("Invalid sequence number!");
@@ -76,6 +80,7 @@ public class Table {
             }
         }
     }
+    
     public void addTiles(int sequenceNumber, ArrayList<Tile> tiles) throws BadArgumentException {
         if(sequenceNumber < 1 || sequenceNumber > sequences.size()){
             throw new BadArgumentException("Invalid sequence number!");
@@ -104,6 +109,7 @@ public class Table {
             }
         }
     }
+    
     public Tile takeTile(int sequenceNumber, String id) throws BadArgumentException {
         if(sequenceNumber < 1 || sequenceNumber > sequences.size()){
             throw new BadArgumentException("Invalid sequence number!");
@@ -142,6 +148,7 @@ public class Table {
             throw new BadArgumentException("There is no such tile as " + id + " available to take!");
         }
     }
+    
     public ArrayList<Tile> takeTiles(int sequenceNumber, String[] ids) throws BadArgumentException {
         if(sequenceNumber < 1 || sequenceNumber > sequences.size()){
             throw new BadArgumentException("Invalid sequence number!");
@@ -173,6 +180,7 @@ public class Table {
         }
         return tiles;
     }
+    
     public void splitSequence(int sequenceNumber, String id) throws BadArgumentException {
         if(sequenceNumber < 1 || sequenceNumber > sequences.size()){
             throw new BadArgumentException("Invalid sequence number!");
@@ -201,6 +209,7 @@ public class Table {
             sequences.add(sequence2);
         }
     }
+    
     public void joinSequences(int sequenceNumber1, int sequenceNumber2) throws BadArgumentException {
         if(sequenceNumber1 < 1 || sequenceNumber1 > sequences.size()){
             throw new BadArgumentException("Invalid sequence number!");
@@ -260,6 +269,7 @@ public class Table {
         sequences.remove(sequence2);
         sequences.add(sequence3);
     }
+    
     public Table tableBackup(){
         Table backup = new Table();
         for(ArrayList<Tile> sequence : sequences){
@@ -271,6 +281,7 @@ public class Table {
         }
         return backup;
     }
+    
     public boolean isTableValid(){
         if(missingTiles.isEmpty()){
             for(ArrayList<Tile> sequence : sequences){
@@ -282,6 +293,7 @@ public class Table {
         }
         return false;
     }
+    
     public String toString(){
         int i = 1;
         String s = "";
@@ -292,32 +304,47 @@ public class Table {
                 s += " (not valid)";
             }
             s += "\n";
-            for (Tile t : sequence) {
-                s += " __ ";
+            if(Main.tileLook == 1){
+                for (Tile t : sequence) {
+                    s += " __ ";
+                }
+                s += "\n";
+                for (Tile t : sequence) {
+                    s = s + "|" + t.toString() + "|";
+                }
+                s += "\n";
+                for(Tile t : sequence){
+                    s += "|__|";
+                }
             }
-            s += "\n";
-            for (Tile t : sequence) {
-                s = s + "|" + t.toString() + "|";
-            }
-            s += "\n";
-            for(Tile t : sequence){
-                s += "|__|";
+            else {
+                for(Tile t : sequence){
+                    s = s + "[" + t + "]";
+                }
             }
             s += "\n";
             i++;
         }
+        
         if(!missingTiles.isEmpty()){
             s += "\nMissing tiles: \n";
-            for (Tile t : missingTiles) {
-                s += " __  ";
+            if(Main.tileLook == 1){
+                for (Tile t : missingTiles) {
+                    s += " __  ";
+                }
+                s += "\n";
+                for (Tile t : missingTiles) {
+                    s = s + "|" + t.toString() + "| ";
+                }
+                s += "\n";
+                for (Tile t : missingTiles) {
+                    s += "|__| ";
+                }
             }
-            s += "\n";
-            for (Tile t : missingTiles) {
-                s = s + "|" + t.toString() + "| ";
-            }
-            s += "\n";
-            for (Tile t : missingTiles) {
-                s += "|__| ";
+            else {
+                for(Tile t : missingTiles){
+                    s = s + "[" + t + "] ";
+                }
             }
             s += "\n";
         }

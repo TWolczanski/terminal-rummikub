@@ -2,7 +2,6 @@ package rummikub;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Random;
 
 public class Game {
     Table table = new Table();
@@ -30,6 +29,7 @@ public class Game {
             players[i] = bot;
         }
     }
+    
     public void startGame(){
         System.out.print("You'll play against ");
         switch(players.length){
@@ -45,53 +45,6 @@ public class Game {
         }
         System.out.println();
         System.out.println();
-        /*
-        Random r = new Random();
-        ArrayList<String> colors = new ArrayList<String>();
-        colors.add("red");
-        colors.add("green");
-        colors.add("yellow");
-        colors.add("blue");
-        for (int i = 0; i < 6; i++) {
-            int type = r.nextInt(2);
-            Collections.shuffle(colors);
-            ArrayList<Tile> tiles = new ArrayList<Tile>();
-            if(type == 0){
-                int number = r.nextInt(13) + 1;
-                int len = r.nextInt(2) + 3;
-                for(int j = 0; j < len; j++){
-                    Tile t = new Tile(colors.get(j), number);
-                    for(Tile tile : pile.tiles){
-                        if(tile.sameAs(t)){
-                            t = tile;
-                        }
-                    }
-                    tiles.add(t);
-                    pile.tiles.remove(t);
-                }
-            }
-            else {
-                int number = r.nextInt(10) + 1;
-                int len = r.nextInt(13 - (number + 1)) + 3;
-                String color = colors.get(0);
-                for(int j = 0; j < len; j++){
-                    Tile t = new Tile(color, number + j);
-                    for(Tile tile : pile.tiles){
-                        if(tile.sameAs(t)){
-                            t = tile;
-                        }
-                    }
-                    tiles.add(t);
-                    pile.tiles.remove(t);
-                }
-            }
-            try {
-                table.putTiles(tiles);
-            } catch (BadArgumentException e) {
-                System.out.println(e.getMessage());
-            }
-        }
-        */
         
         for(Player player : players){
             for(int i = 0; i < 14; i++){
@@ -108,10 +61,65 @@ public class Game {
                     line += "=";
                 }
                 System.out.println();
+                System.out.println(line);
+                System.out.println(msg);
+                System.out.println(line);
+                System.out.println();
                 player.takeTurn(this);
                 if(player.rack.isEmpty() || pile.isEmpty()){
                     end = true;
                     break;
+                }
+            }
+            if(end){
+                break;
+            }
+        }
+        
+        Player winner = players[0];
+        for(Player player : players){
+            if(player.rack.value() < winner.rack.value()){
+                winner = player;
+            }
+        }
+        int winnerPoints = 0;
+        for(Player player : players){
+            if(player != winner){
+                winnerPoints += player.rack.value();
+            }
+        }
+        
+        if(pile.isEmpty()){
+            System.out.println();
+            System.out.println("The pile is empty! Nobody emptied their rack, so the winner is the person with minimum value of tiles remaining in the rack.");
+            System.out.println();
+            System.out.println("The winner is: " + winner);
+            System.out.println();
+            System.out.println("Full score:");
+            for(Player player : players){
+                if(player == winner){
+                    System.out.println();
+                    System.out.println(player + " (winner): " + winnerPoints);
+                    System.out.println(player.rack);
+                }
+                else {
+                    System.out.println();
+                    System.out.println(player + ": " + (-player.rack.value()));
+                    System.out.println(player.rack);
+                }
+            }
+        }
+        else {
+            System.out.println(winner + " emptied their rack!");
+            System.out.println();
+            System.out.println("Full score:");
+            System.out.println();
+            System.out.println(winner + " (winner): " + winnerPoints);
+            for(Player player : players){
+                if(player != winner){
+                    System.out.println();
+                    System.out.println(player + ": " + (-player.rack.value()));
+                    System.out.println(player.rack);
                 }
             }
         }

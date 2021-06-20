@@ -9,6 +9,7 @@ public class Rack {
     public void addTile(Tile t){
         tiles.add(t);
     }
+    
     public void removeTile(Tile t){
         tiles.remove(t);
         ArrayList<Tile> containingGroup = new ArrayList<Tile>();
@@ -24,6 +25,7 @@ public class Rack {
             groups.remove(containingGroup);
         }
     }
+    
     public Tile getTile(String id, int which) throws BadArgumentException {
         int i = which;
         for (ArrayList<Tile> group : groups) {
@@ -51,6 +53,7 @@ public class Rack {
         }
         throw new BadArgumentException("There is no such tile as " + id + " on your rack!");
     }
+    
     private boolean isGrouped(Tile t){
         for(ArrayList<Tile> group : groups){
             for(Tile tile : group){
@@ -61,6 +64,7 @@ public class Rack {
         }
         return false;
     }
+    
     public void groupTiles(ArrayList<Tile> tiles) throws BadArgumentException {
         if(tiles.size() == 1){
             throw new BadArgumentException("You can't group only one tile!");
@@ -73,6 +77,7 @@ public class Rack {
         }
         groups.add(0, tiles);
     }
+    
     public void ungroupTiles(ArrayList<Tile> tiles) throws BadArgumentException {
         boolean found = false;
         for(ArrayList<Tile> group : groups){
@@ -97,9 +102,11 @@ public class Rack {
             throw new BadArgumentException("There is no such group on your rack!");
         }
     }
+    
     public boolean isEmpty(){
         return tiles.isEmpty();
     }
+    
     public Rack rackBackup(){
         Rack backup = new Rack();
         for(Tile t : tiles){
@@ -114,52 +121,85 @@ public class Rack {
         }
         return backup;
     }
+    
+    public int value(){
+        int value = 0;
+        for(Tile t : tiles){
+            value += t.number;
+        }
+        return value;
+    }
+    
     public String toString(){
         String s = "";
-        for(ArrayList<Tile> group : groups){
-            for(Tile t : group){
-                s += " __ ";
+        
+        if(Main.tileLook == 1){
+            for(ArrayList<Tile> group : groups){
+                for(Tile t : group){
+                    s += " __ ";
+                }
+                s += "\n";
+                for(Tile t : group){
+                    s = s + "|" + t.toString() + "|";
+                }
+                s += "\n";
+                for(Tile t : group){
+                    s += "|__|";
+                }
+                s += "\n";
             }
-            s += "\n";
-            for(Tile t : group){
-                s = s + "|" + t.toString() + "|";
-            }
-            s += "\n";
-            for(Tile t : group){
-                s += "|__|";
-            }
-            s += "\n";
-        }
-        ArrayList<ArrayList<Tile>> rows = new ArrayList<ArrayList<Tile>>();
-        ArrayList<Tile> row = new ArrayList<Tile>();
-        int i = 0;
-        for(Tile t : tiles){
-            if(!isGrouped(t)){
-                i++;
-                row.add(t);
-                if (i == 14) {
-                    rows.add(row);
-                    row = new ArrayList<Tile>();
-                    i = 0;
+            ArrayList<ArrayList<Tile>> rows = new ArrayList<ArrayList<Tile>>();
+            ArrayList<Tile> row = new ArrayList<Tile>();
+            int i = 0;
+            for(Tile t : tiles){
+                if(!isGrouped(t)){
+                    i++;
+                    row.add(t);
+                    if (i == 14) {
+                        rows.add(row);
+                        row = new ArrayList<Tile>();
+                        i = 0;
+                    }
                 }
             }
+            if(!row.isEmpty()){
+                rows.add(row);
+            }
+            for(ArrayList<Tile> r : rows){
+                for(Tile t : r){
+                    s += " __  ";
+                }
+                s += "\n";
+                for(Tile t : r){
+                    s = s + "|" + t.toString() + "| ";
+                }
+                s += "\n";
+                for(Tile t : r){
+                    s += "|__| ";
+                }
+                s += "\n";
+            }
         }
-        if(!row.isEmpty()){
-            rows.add(row);
-        }
-        for(ArrayList<Tile> r : rows){
-            for(Tile t : r){
-                s += " __  ";
+        else {
+            if(!groups.isEmpty()){
+                for(ArrayList<Tile> group : groups){
+                    for(Tile t : group){
+                        s = s + "[" + t + "]";
+                    }
+                    s += "\n\n";
+                }
             }
-            s += "\n";
-            for(Tile t : r){
-                s = s + "|" + t.toString() + "| ";
+            int i = 0;
+            for(Tile t : tiles){
+                if(!isGrouped(t)){
+                    i++;
+                    s = s + "[" + t + "] ";
+                    if(i == 14){
+                        s += "\n";
+                        i = 0;
+                    }
+                }
             }
-            s += "\n";
-            for(Tile t : r){
-                s += "|__| ";
-            }
-            s += "\n";
         }
         return s;
     }
