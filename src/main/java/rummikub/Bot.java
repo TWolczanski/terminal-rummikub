@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Bot extends Player {
+    
     public Bot(String name){
         super(name);
     }
@@ -180,8 +181,6 @@ public class Bot extends Player {
                 System.out.println();
                 System.out.println("Table:");
                 System.out.println(game.table);
-                System.out.println(name + "'s rack:");
-                System.out.println(rack);
                 System.out.println("Press Enter to see " + name + "'s next play.");
                 String read = scanner.nextLine();
                 while(!read.isEmpty()){
@@ -210,8 +209,6 @@ public class Bot extends Player {
             System.out.println();
             System.out.println("Table:");
             System.out.println(game.table);
-            System.out.println(name + "'s rack:");
-            System.out.println(rack);
             System.out.println("Press Enter to see " + name + "'s next play.");
             String read = scanner.nextLine();
             while(!read.isEmpty()){
@@ -238,8 +235,6 @@ public class Bot extends Player {
             System.out.println();
             System.out.println("Table:");
             System.out.println(game.table);
-            System.out.println(name + "'s rack:");
-            System.out.println(rack);
             System.out.println("Press Enter to see " + name + "'s next play.");
             String read = scanner.nextLine();
             while(!read.isEmpty()){
@@ -253,6 +248,13 @@ public class Bot extends Player {
     
     @Override
     public void takeTurn(Game game){
+        
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Press Enter to see their plays.");
+        String read = scanner.nextLine();
+        while(!read.isEmpty()){
+            read = scanner.nextLine();
+        }
         
         ArrayList<ArrayList<Tile>> rackPlay = findRackPlay();
         
@@ -390,6 +392,7 @@ public class Bot extends Player {
                 Tile t = game.pile.draw();
                 rack.addTile(t);
                 System.out.println(name + " draws a tile from the pile.");
+                System.out.println();
             }
         }
         else {

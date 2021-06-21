@@ -1,9 +1,10 @@
 package rummikub;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class Pile {
+public class Pile implements Serializable {
     ArrayList<Tile> tiles = new ArrayList<Tile>(104);
     
     public Pile(){

@@ -1,8 +1,9 @@
 package rummikub;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Table {
+public class Table implements Serializable {
     ArrayList<ArrayList<Tile>> sequences = new ArrayList<ArrayList<Tile>>();
     ArrayList<Tile> missingTiles = new ArrayList<Tile>();
     
@@ -342,6 +343,7 @@ public class Table {
                 }
             }
             else {
+                s += "\n";
                 for(Tile t : missingTiles){
                     s = s + "[" + t + "] ";
                 }

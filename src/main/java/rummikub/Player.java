@@ -1,9 +1,10 @@
 package rummikub;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Player {
+public class Player implements Serializable {
     Rack rack = new Rack();
     String name;
     boolean initialPlay = false;
@@ -52,6 +53,10 @@ public class Player {
                 if (cmd.equals("quit") && s.length == 1) {
                     System.exit(0);
                 }
+                if (cmd.equals("save") && s.length == 2 && canDraw){
+                    game.saveGame(s[1] + ".ser");
+                    System.out.println();
+                }
                 else if (cmd.equals("end") && s.length == 1) {
                     if (canDraw) {
                         throw new BadInputException("You have to draw or make at least one play in order to end your turn!");
@@ -89,6 +94,7 @@ public class Player {
                 else if (cmd.equals("rack") && s.length == 1) {
                     System.out.println();
                     System.out.println(rack);
+                    System.out.println();
                 }
                 else if (cmd.equals("table") && s.length == 1) {
                     System.out.println(game.table);

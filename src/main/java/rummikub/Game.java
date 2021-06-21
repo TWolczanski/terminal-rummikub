@@ -1,14 +1,19 @@
 package rummikub;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class Game {
+public class Game implements Serializable {
     Table table = new Table();
     Pile pile = new Pile();
     Player[] players;
     
     public Game(String playerName, int numberOfBots){
+        
         players = new Player[numberOfBots + 1];
         ArrayList<String> botNames = new ArrayList<String>();
         botNames.add("John");
@@ -22,15 +27,14 @@ public class Game {
         botNames.add("Emma");
         botNames.add("Sofia");
         Collections.shuffle(botNames);
+        
         Player player = new Player(playerName);
         players[0] = player;
         for(int i = 1; i < players.length; i++){
             Player bot = new Bot(botNames.get(i));
             players[i] = bot;
         }
-    }
-    
-    public void startGame(){
+        
         System.out.print("You'll play against ");
         switch(players.length){
             case 2:
@@ -46,12 +50,15 @@ public class Game {
         System.out.println();
         System.out.println();
         
-        for(Player player : players){
+        for(Player p : players){
             for(int i = 0; i < 14; i++){
-                player.rack.addTile(pile.draw());
+                p.rack.addTile(pile.draw());
             }
         }
         
+    }
+    
+    public void startGame(){
         while(true){
             boolean end = false;
             for(Player player : players){
@@ -122,6 +129,19 @@ public class Game {
                     System.out.println(player.rack);
                 }
             }
+        }
+    }
+    
+    public void saveGame(String filename) {
+        try {
+            FileOutputStream fout = new FileOutputStream(filename);
+            ObjectOutputStream out = new ObjectOutputStream(fout);
+            out.writeObject(this);
+            fout.close();
+            out.close();
+        }
+        catch(IOException e){
+            System.out.println("Something went wrong while saving the game!");
         }
     }
 }

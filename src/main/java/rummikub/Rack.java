@@ -1,8 +1,9 @@
 package rummikub;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Rack {
+public class Rack implements Serializable {
     ArrayList<Tile> tiles = new ArrayList<Tile>();
     ArrayList<ArrayList<Tile>> groups = new ArrayList<ArrayList<Tile>>();
     
@@ -69,10 +70,17 @@ public class Rack {
         if(tiles.size() == 1){
             throw new BadArgumentException("You can't group only one tile!");
         }
-        for(Tile t : tiles){
+        for(int i = 0; i < tiles.size(); i++){
+            Tile t = tiles.get(i);
             if(isGrouped(t)){
                 removeTile(t);
                 addTile(t);
+            }
+            for(int j = 0; j < i; j++){
+                Tile tile = tiles.get(j);
+                if(t == tile){
+                    throw new BadArgumentException("You can't use a tile multiple times in one group!");
+                }
             }
         }
         groups.add(0, tiles);
@@ -195,10 +203,13 @@ public class Rack {
                     i++;
                     s = s + "[" + t + "] ";
                     if(i == 14){
-                        s += "\n";
+                        s += "\n\n";
                         i = 0;
                     }
                 }
+            }
+            if(i == 0 && !isEmpty()){
+                s = s.substring(0, s.length() - 2);
             }
         }
         return s;
