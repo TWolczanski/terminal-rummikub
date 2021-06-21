@@ -3,6 +3,7 @@ package rummikub;
 import java.io.Serializable;
 
 public class Tile implements Serializable {
+    public static int tileLook;
     public static final String RESET = "\u001B[0m";
     public static final String RED = "\033[0;91m";
     public static final String GREEN = "\033[0;92m";

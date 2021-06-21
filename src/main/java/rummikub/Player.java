@@ -69,7 +69,7 @@ public class Player implements Serializable {
                             Tile t = game.pile.draw();
                             rack.addTile(t);
                             System.out.println();
-                            if(Main.tileLook == 1){
+                            if(Tile.tileLook == 1){
                                 System.out.println("You drew:");
                                 System.out.println(" __ ");
                                 System.out.println("|" + t + "|");
@@ -88,13 +88,14 @@ public class Player implements Serializable {
                                 System.out.println(rack);
                             }
                         }
-                        System.out.println();
                     }
                 }
                 else if (cmd.equals("rack") && s.length == 1) {
                     System.out.println();
                     System.out.println(rack);
-                    System.out.println();
+                    if(Tile.tileLook == 2){
+                        System.out.println();
+                    }
                 }
                 else if (cmd.equals("table") && s.length == 1) {
                     System.out.println(game.table);
@@ -107,7 +108,7 @@ public class Player implements Serializable {
                         rack.addTile(t);
                         end = true;
                         System.out.println();
-                        if(Main.tileLook == 1){
+                        if(Tile.tileLook == 1){
                             System.out.println("You drew:");
                             System.out.println(" __ ");
                             System.out.println("|" + t + "|");
@@ -145,7 +146,7 @@ public class Player implements Serializable {
                     rack.groupTiles(tiles);
                     System.out.println();
                     System.out.println("Your rack:");
-                    if(Main.tileLook == 2){
+                    if(Tile.tileLook == 2){
                         System.out.println();
                         System.out.println(rack);
                         System.out.println();
@@ -172,7 +173,7 @@ public class Player implements Serializable {
                     rack.ungroupTiles(tiles);
                     System.out.println();
                     System.out.println("Your rack:");
-                    if(Main.tileLook == 2){
+                    if(Tile.tileLook == 2){
                         System.out.println();
                         System.out.println(rack);
                         System.out.println();
@@ -207,7 +208,7 @@ public class Player implements Serializable {
                     System.out.println("Table:");
                     System.out.println(game.table);
                     System.out.println("Your rack:");
-                    if(Main.tileLook == 2){
+                    if(Tile.tileLook == 2){
                         System.out.println();
                         System.out.println(rack);
                         System.out.println();
@@ -247,7 +248,7 @@ public class Player implements Serializable {
                     System.out.println("Table:");
                     System.out.println(game.table);
                     System.out.println("Your rack:");
-                    if(Main.tileLook == 2){
+                    if(Tile.tileLook == 2){
                         System.out.println();
                         System.out.println(rack);
                         System.out.println();
@@ -287,7 +288,7 @@ public class Player implements Serializable {
                     System.out.println("Table:");
                     System.out.println(game.table);
                     System.out.println("Your rack:");
-                    if(Main.tileLook == 2){
+                    if(Tile.tileLook == 2){
                         System.out.println();
                         System.out.println(rack);
                         System.out.println();
@@ -323,7 +324,7 @@ public class Player implements Serializable {
                     System.out.println("Table:");
                     System.out.println(game.table);
                     System.out.println("Your rack:");
-                    if(Main.tileLook == 2){
+                    if(Tile.tileLook == 2){
                         System.out.println();
                         System.out.println(rack);
                         System.out.println();
@@ -347,7 +348,7 @@ public class Player implements Serializable {
                     System.out.println("Table:");
                     System.out.println(game.table);
                     System.out.println("Your rack:");
-                    if(Main.tileLook == 2){
+                    if(Tile.tileLook == 2){
                         System.out.println();
                     }
                     System.out.println(rack);

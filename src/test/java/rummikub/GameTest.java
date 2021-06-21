@@ -9,7 +9,7 @@ public class GameTest {
     @org.junit.Test
     public static void main(String[] args){
         Game game = new Game("Tomek", 1);
-        Main.tileLook = 2;
+        Tile.tileLook = 2;
         for(int i = 0; i < 14; i++){
             game.players[0].rack.addTile(game.pile.draw());
         }

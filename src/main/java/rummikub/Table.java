@@ -305,7 +305,7 @@ public class Table implements Serializable {
                 s += " (not valid)";
             }
             s += "\n";
-            if(Main.tileLook == 1){
+            if(Tile.tileLook == 1){
                 for (Tile t : sequence) {
                     s += " __ ";
                 }
@@ -329,7 +329,7 @@ public class Table implements Serializable {
         
         if(!missingTiles.isEmpty()){
             s += "\nMissing tiles: \n";
-            if(Main.tileLook == 1){
+            if(Tile.tileLook == 1){
                 for (Tile t : missingTiles) {
                     s += " __  ";
                 }

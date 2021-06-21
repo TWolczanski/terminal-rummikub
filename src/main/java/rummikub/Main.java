@@ -9,7 +9,6 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
-    public static int tileLook;
     public static void main(String[] args) throws FileNotFoundException {
         File file = new File("ascii-art.txt");
         Scanner scanner = new Scanner(file);
@@ -31,9 +30,9 @@ public class Main {
         while(true){
             try {
                 System.out.print("Choose your preferred look of tiles: ");
-                tileLook = scanner.nextInt();
+                Tile.tileLook = scanner.nextInt();
                 scanner.nextLine();
-                if(tileLook == 1 || tileLook == 2){
+                if(Tile.tileLook == 1 || Tile.tileLook == 2){
                     break;
                 }
                 else {

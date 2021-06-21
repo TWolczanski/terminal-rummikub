@@ -141,7 +141,10 @@ public class Rack implements Serializable {
     public String toString(){
         String s = "";
         
-        if(Main.tileLook == 1){
+        if(isEmpty()){
+            s += "(empty)";
+        }
+        else if(Tile.tileLook == 1){
             for(ArrayList<Tile> group : groups){
                 for(Tile t : group){
                     s += " __ ";

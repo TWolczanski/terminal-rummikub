@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Scanner;
 
 public class Game implements Serializable {
     Table table = new Table();
@@ -102,33 +103,55 @@ public class Game implements Serializable {
             System.out.println();
             System.out.println("The winner is: " + winner);
             System.out.println();
-            System.out.println("Full score:");
+            System.out.println("==========");
+            System.out.println("Full score");
+            System.out.println("==========");
             for(Player player : players){
                 if(player == winner){
                     System.out.println();
                     System.out.println(player + " (winner): " + winnerPoints);
+                    if(Tile.tileLook == 2){
+                        System.out.println();
+                    }
                     System.out.println(player.rack);
                 }
                 else {
                     System.out.println();
                     System.out.println(player + ": " + (-player.rack.value()));
+                    if(Tile.tileLook == 2){
+                        System.out.println();
+                    }
                     System.out.println(player.rack);
                 }
             }
         }
         else {
+            System.out.println();
             System.out.println(winner + " emptied their rack!");
             System.out.println();
-            System.out.println("Full score:");
+            System.out.println("==========");
+            System.out.println("Full score");
+            System.out.println("==========");
             System.out.println();
             System.out.println(winner + " (winner): " + winnerPoints);
+            if(Tile.tileLook == 1){
+                System.out.println();
+            }
             for(Player player : players){
                 if(player != winner){
-                    System.out.println();
+                    if(Tile.tileLook == 2){
+                        System.out.println();
+                    }
                     System.out.println(player + ": " + (-player.rack.value()));
+                    if(Tile.tileLook == 2){
+                        System.out.println();
+                    }
                     System.out.println(player.rack);
                 }
             }
+        }
+        if(Tile.tileLook == 2){
+            System.out.println();
         }
     }
     
