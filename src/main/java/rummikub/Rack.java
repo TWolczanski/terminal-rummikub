@@ -190,6 +190,7 @@ public class Rack implements Serializable {
                 }
                 s += "\n";
             }
+            s = s.substring(0, s.length() - 1);
         }
         else {
             if(!groups.isEmpty()){

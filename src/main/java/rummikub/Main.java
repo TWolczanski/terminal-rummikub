@@ -92,19 +92,23 @@ public class Main {
             game.startGame();
         }
         else {
-            try {
-                System.out.print("Enter the name of the file: ");
-                String filename = scanner.nextLine();
-                filename += ".ser";
-                FileInputStream fin = new FileInputStream(filename);
-                ObjectInputStream in = new ObjectInputStream(fin);
-                Game game = (Game) in.readObject();
-                fin.close();
-                in.close();
-                game.startGame();
-            }
-            catch(IOException | ClassNotFoundException e){
-                System.out.println(e.getMessage());
+            while(true){
+                try {
+                    System.out.print("Enter the name of the file: ");
+                    String filename = scanner.nextLine();
+                    filename += ".ser";
+                    FileInputStream fin = new FileInputStream(filename);
+                    ObjectInputStream in = new ObjectInputStream(fin);
+                    Game game = (Game) in.readObject();
+                    fin.close();
+                    in.close();
+                    game.startGame();
+                    break;
+                }
+                catch(IOException | ClassNotFoundException e){
+                    System.out.println("Couldn't find the file!");
+                    continue;
+                }
             }
         }
         scanner.close();

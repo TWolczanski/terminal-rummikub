@@ -36,6 +36,12 @@ public class Game implements Serializable {
             players[i] = bot;
         }
         
+        for(Player p : players){
+            for(int i = 0; i < 14; i++){
+                p.rack.addTile(pile.draw());
+            }
+        }
+        
         System.out.print("You'll play against ");
         switch(players.length){
             case 2:
@@ -49,14 +55,6 @@ public class Game implements Serializable {
                 break;
         }
         System.out.println();
-        System.out.println();
-        
-        for(Player p : players){
-            for(int i = 0; i < 14; i++){
-                p.rack.addTile(pile.draw());
-            }
-        }
-        
     }
     
     public void startGame(){

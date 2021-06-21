@@ -1,12 +1,6 @@
 package rummikub;
 
-import static org.junit.Assert.*;
-// import org.junit.Test;
-
-import java.util.ArrayList;
-
 public class GameTest {
-    @org.junit.Test
     public static void main(String[] args){
         Game game = new Game("Tomek", 1);
         Tile.tileLook = 2;
