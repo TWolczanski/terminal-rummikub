@@ -114,6 +114,7 @@ public class Player implements Serializable {
                             System.out.println();
                             System.out.println("Your rack:");
                             System.out.println(rack);
+                            System.out.println();
                         }
                         else {
                             System.out.println("You draw:");
@@ -123,6 +124,7 @@ public class Player implements Serializable {
                             System.out.println("Your rack:");
                             System.out.println();
                             System.out.println(rack);
+                            System.out.println();
                         }
                     }
                 }

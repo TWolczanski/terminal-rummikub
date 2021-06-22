@@ -20,15 +20,19 @@ public class Tile implements Serializable {
         this.number = number;
         this.id = color.charAt(0) + Integer.toString(number);
     }
+    
     public boolean hasId(String id){
         return this.id.equals(id);
     }
+    
     public boolean sameAs(Tile t){
         return this.color.equals(t.color) && this.number == t.number;
     }
+    
     public boolean sameColorAs(Tile t){
         return this.color.equals(t.color);
     }
+    
     public String toString(){
         String s;
         if(number < 10){
